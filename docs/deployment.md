@@ -93,6 +93,10 @@ To run the Docker stack on a home server instead, set `DOMAIN=:80` in `.env`.
 
 ## Option C — VPS without Docker
 
+For an existing Nginx website and a nested public path, see
+[native `/openmic` deployment](native-subpath-deployment.md), including systemd, PostgreSQL,
+path-aware builds, private credentials and verified backups.
+
 ```bash
 cd apps/web && npm ci && npm run build
 cd ../../services/api && uv sync --no-dev

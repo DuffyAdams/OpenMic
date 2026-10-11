@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { api, ApiError } from '$lib/api';
@@ -40,7 +41,7 @@
         joinCode: r.join_code,
         displayName: r.participant.display_name
       });
-      await goto(`/room/${r.join_code}`, { replaceState: true });
+      await goto(`${base}/room/${r.join_code}`, { replaceState: true });
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Something went wrong.';
       busy = false;

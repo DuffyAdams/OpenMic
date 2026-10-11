@@ -21,7 +21,7 @@ object ServerConfig {
 
     /**
      * Accepts "karaoke.example.com", "https://karaoke.example.com/", "http://192.168.1.20:8000".
-     * Returns a canonical "scheme://host[:port]" (no trailing slash), or null if it isn't a URL.
+     * Returns a canonical "scheme://host[:port][/base]" (no trailing slash), or null if invalid.
      * Bare hosts default to https, except private LAN addresses, which default to http.
      */
     fun normalize(input: String?): String? {
@@ -35,7 +35,8 @@ object ServerConfig {
         val host = uri.host
         if ((scheme != "http" && scheme != "https") || host.isNullOrBlank()) return null
         val port = if (uri.port != -1) ":${uri.port}" else ""
-        return "$scheme://$host$port"
+        val path = uri.encodedPath.orEmpty().trimEnd('/')
+        return "$scheme://$host$port$path"
     }
 
     private fun looksLocal(hostPart: String): Boolean {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import Brand from '$lib/components/Brand.svelte';
   import Icon from '$lib/components/Icon.svelte';
@@ -10,7 +11,7 @@
 
   function submit(e: Event) {
     e.preventDefault();
-    if (clean.length >= 4) goto(`/join/${clean}`);
+    if (clean.length >= 4) goto(`${base}/join/${clean}`);
   }
 </script>
 
@@ -45,7 +46,7 @@
   </form>
 
   {#if last}
-    <a class="continue card" href="/room/{last.joinCode}">
+    <a class="continue card" href="{base}/room/{last.joinCode}">
       <span class="faint">Continue as</span>
       <strong>{last.displayName}</strong>
       <span class="chip">{last.joinCode}</span>
@@ -54,7 +55,7 @@
   {/if}
 
   <footer>
-    <a href="/admin" class="faint">Host &amp; TV setup</a>
+    <a href="{base}/admin" class="faint">Host &amp; TV setup</a>
   </footer>
 </main>
 

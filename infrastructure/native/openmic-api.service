@@ -1,0 +1,32 @@
+[Unit]
+Description=OpenMic karaoke API and static web application
+After=network.target postgresql@18-main.service
+Requires=postgresql@18-main.service
+
+[Service]
+Type=simple
+User=openmic
+Group=openmic
+WorkingDirectory=/home/ubuntu/projects/OpenMic/services/api
+EnvironmentFile=/etc/openmic/backend.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/home/ubuntu/projects/OpenMic/services/api/.venv/bin/uvicorn app.asgi:app --host 127.0.0.1 --port 8012 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1 --root-path /openmic --no-access-log
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+StateDirectory=openmic
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+CapabilityBoundingSet=
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

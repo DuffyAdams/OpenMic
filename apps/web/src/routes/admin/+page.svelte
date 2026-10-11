@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { onDestroy, onMount } from 'svelte';
   import { api, ApiError } from '$lib/api';
@@ -70,7 +71,7 @@
   async function hostParty(sessionId: string, joinCode: string) {
     const existing = credentials.get(joinCode);
     if (existing?.sessionId === sessionId) {
-      goto(`/room/${joinCode}`);
+      goto(`${base}/room/${joinCode}`);
       return;
     }
     try {
@@ -85,7 +86,7 @@
         joinCode: r.join_code,
         displayName: r.participant.display_name
       });
-      goto(`/room/${r.join_code}`);
+      goto(`${base}/room/${r.join_code}`);
     } catch (err) {
       toasts.error(err instanceof ApiError ? err.message : 'Could not open the party');
     }
@@ -148,7 +149,7 @@
 <div class="lounge-bg"></div>
 <main class="page admin">
   <header>
-    <a href="/" class="home"><Brand /></a>
+    <a href="{base}/" class="home"><Brand /></a>
     {#if token}<button class="btn btn-ghost btn-sm" onclick={logout}>Sign out</button>{/if}
   </header>
 
@@ -176,7 +177,7 @@
                 <button class="btn btn-primary btn-sm" onclick={() => hostParty(s.id, s.join_code)}>
                   <Icon name="sliders" size={16} /> Host controls
                 </button>
-                <a class="btn btn-ghost btn-sm" href="/join/{s.join_code}">Guest view</a>
+                <a class="btn btn-ghost btn-sm" href="{base}/join/{s.join_code}">Guest view</a>
                 <button class="btn btn-danger btn-sm" onclick={() => endParty(s.id)}>End</button>
               </div>
             </li>

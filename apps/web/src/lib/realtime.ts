@@ -1,3 +1,4 @@
+import { base } from '$app/paths';
 import type { ServerMessage } from './types';
 
 export type SocketStatus = 'connecting' | 'online' | 'reconnecting' | 'closed';
@@ -86,7 +87,7 @@ export class RoomSocket {
     const scheme = location.protocol === 'https:' ? 'wss' : 'ws';
     let ws: WebSocket;
     try {
-      ws = new WebSocket(`${scheme}://${location.host}/api/ws`);
+      ws = new WebSocket(`${scheme}://${location.host}${base}/api/ws`);
     } catch {
       this.scheduleRetry();
       return;

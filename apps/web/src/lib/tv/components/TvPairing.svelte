@@ -6,8 +6,8 @@
 
   const tv = useTv();
   const code = $derived(tv.pairing?.code ?? '');
-  const url = $derived(`${location.origin}/admin/pair?code=${code}`);
-  const host = location.host;
+  const url = $derived(`${tv.joinBase}/admin/pair?code=${code}`);
+  const host = $derived(tv.joinBase.replace(/^https?:\/\//, ''));
 </script>
 
 <section class="tv-screen pairing" use:focusScope>

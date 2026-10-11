@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { page } from '$app/state';
   import { api, ApiError } from '$lib/api';
   import AdminLogin from '$lib/components/AdminLogin.svelte';
@@ -40,14 +41,14 @@
 
 <div class="lounge-bg"></div>
 <main class="page">
-  <header><a href="/admin" class="home"><Brand /></a></header>
+  <header><a href="{base}/admin" class="home"><Brand /></a></header>
 
   {#if paired}
     <section class="card done">
       <span class="ok"><Icon name="check" size={30} /></span>
       <h1 class="display">{paired.name} is ready</h1>
       <p class="muted">The TV will switch to the party lobby in a few seconds.</p>
-      <a class="btn btn-primary" href="/admin">Go to host setup</a>
+      <a class="btn btn-primary" href="{base}/admin">Go to host setup</a>
     </section>
   {:else if !token}
     <AdminLogin onlogin={(t) => (token = t)} subtitle="Sign in to pair this TV." />

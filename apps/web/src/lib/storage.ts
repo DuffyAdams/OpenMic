@@ -1,10 +1,11 @@
+import { base } from '$app/paths';
 import type { Credentials } from './types';
 
 /** localStorage that never throws (private mode, blocked storage, quota). */
 export const store = {
   get<T>(key: string): T | null {
     try {
-      const raw = localStorage.getItem(key);
+      const raw = localStorage.getItem(base ? `${base}:${key}` : key);
       return raw ? (JSON.parse(raw) as T) : null;
     } catch {
       return null;
@@ -12,14 +13,14 @@ export const store = {
   },
   set(key: string, value: unknown): void {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      localStorage.setItem(base ? `${base}:${key}` : key, JSON.stringify(value));
     } catch {
       /* ignore */
     }
   },
   remove(key: string): void {
     try {
-      localStorage.removeItem(key);
+      localStorage.removeItem(base ? `${base}:${key}` : key);
     } catch {
       /* ignore */
     }

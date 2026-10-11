@@ -16,6 +16,7 @@ import contextlib
 import json
 import logging
 
+import anyio
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field, ValidationError
 
@@ -138,8 +139,11 @@ async def websocket_endpoint(ws: WebSocket):
         log.exception("websocket error", extra={"session_id": party_id})
     finally:
         services.hub.remove(conn)
-        await _touch(services, conn)
-        await services.rooms.broadcast_presence(party_id)
+        # Disconnect cancellation must not interrupt a database transaction and return a
+        # half-closed connection to the pool. Bound cleanup while shielding outer cancellation.
+        with anyio.move_on_after(5, shield=True):
+            await _touch(services, conn)
+            await services.rooms.broadcast_presence(party_id)
 
 
 async def _touch(services: Services, conn: Connection) -> None:

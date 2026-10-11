@@ -1,0 +1,149 @@
+/*
+ * TV layout: designed at 1920×1080 where 1rem = 16px, scaled to the actual screen (720p, 1080p,
+ * 4K, or a desktop browser window) while keeping 16:9 proportions. TV-safe margins ≈ 5%.
+ */
+html.tv {
+  font-size: min(calc(100vw / 120), calc(100vh / 67.5));
+  overflow: hidden;
+  background: #000;
+}
+html.tv body {
+  overflow: hidden;
+  min-height: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tv-root {
+  --safe-x: 6rem;
+  --safe-y: 3.75rem;
+  --side-w: 36rem;
+  --band-h: 8.75rem;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.5rem;
+}
+
+.tv-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: var(--safe-y) var(--safe-x);
+  background: var(--bg);
+  overflow: hidden;
+  animation: tv-fade var(--dur-slow) var(--ease) both;
+}
+@keyframes tv-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.tv-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--wash) 0%, rgba(36, 18, 74, 0.75) 30%, transparent 70%);
+}
+
+/* Focusable controls (D-pad) */
+.tv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  height: 4.5rem;
+  padding: 0 2.25rem;
+  border-radius: 999px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 0.125rem solid transparent;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  outline: none;
+}
+.tv-btn.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+.tv-btn.gold {
+  background: var(--premium);
+  color: var(--premium-ink);
+  border-color: transparent;
+}
+.tv-btn.danger {
+  color: var(--danger);
+}
+[data-focus]:focus,
+[data-focus]:focus-visible {
+  outline: none;
+}
+.tv-btn:focus {
+  transform: scale(1.06);
+  border-color: var(--text);
+  box-shadow:
+    0 0 0 0.3rem #fff,
+    0 1rem 3rem -0.5rem rgba(169, 112, 255, 0.55);
+}
+.tv-btn.primary:focus,
+.tv-btn.gold:focus {
+  border-color: transparent;
+}
+
+.tv-eyebrow {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.tv-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+.tv-mono {
+  font-family: var(--font-mono);
+}
+
+/* Demo player (tests/offline) */
+.fake-player {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60% 80% at 30% 30%, #3d1f6e, transparent 70%),
+    radial-gradient(60% 80% at 80% 80%, #24124a, transparent 70%),
+    #121212;
+}
+.fp-inner {
+  text-align: center;
+  font-size: 2rem;
+}
+.fp-label {
+  font-size: 1.1rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.fp-id {
+  margin: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 4rem;
+  font-weight: 700;
+}
+.fp-state {
+  color: var(--text-2);
+}

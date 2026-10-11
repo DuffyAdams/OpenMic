@@ -1,0 +1,43 @@
+# DOMAIN is a hostname (karaoke.example.com → automatic HTTPS via Let's Encrypt)
+# or ":80" for plain HTTP on a home network.
+{
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+{$DOMAIN::80} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		# Keep a cross-origin Referer: the YouTube player requires one to identify the embedding site.
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		X-Frame-Options SAMEORIGIN
+		-Server
+	}
+
+	handle /api/* {
+		reverse_proxy api:8000 {
+			# WebSockets stay open for the whole party.
+			stream_timeout 24h
+			stream_close_delay 5m
+		}
+	}
+
+	handle {
+		root * /srv
+		@immutable path /_app/immutable/*
+		header @immutable Cache-Control "public, max-age=31536000, immutable"
+		@shell not path /_app/immutable/*
+		header @shell Cache-Control "no-cache"
+		try_files {path} /200.html
+		file_server
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

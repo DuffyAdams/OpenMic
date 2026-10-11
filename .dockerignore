@@ -1,0 +1,10 @@
+**/node_modules
+**/.svelte-kit
+**/build
+**/test-results
+**/screenshots
+apps/fire-tv
+services/api/.venv
+infrastructure/.env
+infrastructure/backups
+.git

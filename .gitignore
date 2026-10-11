@@ -1,0 +1,13 @@
+.DS_Store
+*.db
+*.db-shm
+*.db-wal
+.lan-secret
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/

@@ -1,3 +1,4 @@
+import { base } from '$app/paths';
 import { api, ApiError } from '../api';
 import { singers } from '../format';
 import { RoomStore, Ticker } from '../room.svelte';
@@ -154,7 +155,7 @@ export class TvController {
   }
 
   get joinBase(): string {
-    return (this.config?.public_base_url || location.origin).replace(/\/$/, '');
+    return (this.config?.public_base_url || `${location.origin}${base}`).replace(/\/$/, '');
   }
 
   get joinUrl(): string {

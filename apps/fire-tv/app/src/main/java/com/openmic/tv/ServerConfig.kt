@@ -36,7 +36,7 @@ object ServerConfig {
         val host = uri.host
         if ((scheme != "http" && scheme != "https") || host.isNullOrBlank()) return null
         val port = if (uri.port != -1) ":${uri.port}" else ""
-        val path = uri.path.orEmpty().trimEnd('/')
+        val path = uri.encodedPath.orEmpty().trimEnd('/')
         return "$scheme://$host$port$path"
     }
 

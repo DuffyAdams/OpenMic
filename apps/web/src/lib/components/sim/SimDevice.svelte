@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { onMount, type Snippet } from 'svelte';
   import Icon from '$lib/components/Icon.svelte';
   import { SIM_PREFIX } from '$lib/storage';
@@ -35,6 +36,7 @@
   let path = $state('');
   let nonce = $state(0);
 
+  const frameSrc = $derived(`${base}${src}`);
   const bezel = $derived(kind === 'phone' ? 10 : 8);
   const scale = $derived(
     slotW && slotH ? Math.min((slotW - bezel * 2) / width, (slotH - bezel * 2) / height) : 0
@@ -65,11 +67,11 @@
 <section class="device {kind}" aria-label={label}>
   <header>
     <span class="label">{label}</span>
-    <code class="path" title={path}>{path || src}</code>
+    <code class="path" title={path}>{path || frameSrc}</code>
     <button class="icon-btn mini" title="Reload" aria-label="Reload {label}" onclick={reload}>
       <Icon name="restart" size={15} />
     </button>
-    <a class="icon-btn mini" href={path || src} target="_blank" rel="noopener" title="Open in a new tab"
+    <a class="icon-btn mini" href={path || frameSrc} target="_blank" rel="noopener" title="Open in a new tab"
       aria-label="Open {label} in a new tab">
       <Icon name="external" size={15} />
     </a>
@@ -89,7 +91,7 @@
               bind:this={frame}
               name={SIM_PREFIX + device}
               title={label}
-              {src}
+              src={frameSrc}
               allow="autoplay; fullscreen; encrypted-media; clipboard-read; clipboard-write"
               style:width="{width}px"
               style:height="{height}px"

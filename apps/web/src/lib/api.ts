@@ -1,3 +1,5 @@
+import { base } from '$app/paths';
+
 export class ApiError extends Error {
   status: number;
   code: string;
@@ -23,7 +25,7 @@ interface RequestOptions {
 }
 
 export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const url = new URL(path, location.origin);
+  const url = new URL(`${base}${path}`, location.origin);
   for (const [k, v] of Object.entries(opts.query ?? {})) {
     if (v !== undefined) url.searchParams.set(k, String(v));
   }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { onDestroy, onMount } from 'svelte';
@@ -27,7 +28,7 @@
 
   onMount(async () => {
     if (!creds) {
-      goto(`/join/${code}`, { replaceState: true });
+      goto(`${base}/join/${code}`, { replaceState: true });
       return;
     }
     const config = await api<PublicConfig>('/api/config').catch(() => fallbackConfig);
@@ -37,7 +38,7 @@
     } catch (e) {
       if (e instanceof ApiError && (e.status === 401 || e.status === 403)) {
         credentials.clear(code);
-        goto(`/join/${code}`, { replaceState: true });
+        goto(`${base}/join/${code}`, { replaceState: true });
         return;
       }
       loadError = e instanceof ApiError ? e.message : 'Could not load the party.';
@@ -97,7 +98,7 @@
 
   function leave() {
     credentials.clear(code);
-    goto('/');
+    goto(`${base}/`);
   }
 </script>
 
@@ -112,7 +113,7 @@
       <Icon name="logout" size={30} />
       <h1>{party.fatal === 'removed' ? 'You were removed from the party' : 'Your session expired'}</h1>
       <p class="muted">You can rejoin with the code on the TV.</p>
-      <button class="btn btn-primary" onclick={() => { credentials.clear(code); goto(`/join/${code}`); }}>Rejoin</button>
+      <button class="btn btn-primary" onclick={() => { credentials.clear(code); goto(`${base}/join/${code}`); }}>Rejoin</button>
     </div>
   </main>
 {:else if party?.ended && party.state}

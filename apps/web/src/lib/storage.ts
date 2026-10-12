@@ -1,9 +1,11 @@
+import { base } from '$app/paths';
 import type { Credentials } from './types';
 
 /**
  * The /sim page runs the TV and phones as same-origin iframes named `sim:<device>`. Each one gets
  * its own key namespace so they behave like separate devices instead of sharing one identity.
  */
+const baseNamespace = base ? `${base}:` : '';
 export const SIM_PREFIX = 'sim:';
 const simNamespace = (device: string) => `${SIM_PREFIX}${device}|`;
 const ownNamespace = (() => {
@@ -18,10 +20,11 @@ export type Store = ReturnType<typeof scopedStore>;
 
 /** localStorage that never throws (private mode, blocked storage, quota). */
 function scopedStore(namespace: string) {
+  const prefix = baseNamespace + namespace;
   return {
     get<T>(key: string): T | null {
       try {
-        const raw = localStorage.getItem(namespace + key);
+        const raw = localStorage.getItem(prefix + key);
         return raw ? (JSON.parse(raw) as T) : null;
       } catch {
         return null;
@@ -29,14 +32,14 @@ function scopedStore(namespace: string) {
     },
     set(key: string, value: unknown): void {
       try {
-        localStorage.setItem(namespace + key, JSON.stringify(value));
+        localStorage.setItem(prefix + key, JSON.stringify(value));
       } catch {
         /* ignore */
       }
     },
     remove(key: string): void {
       try {
-        localStorage.removeItem(namespace + key);
+        localStorage.removeItem(prefix + key);
       } catch {
         /* ignore */
       }
@@ -109,7 +112,7 @@ export function simDevice(device: string) {
 
 /** Forget a simulated device, or all of them (fresh TV identity, phones that never joined). */
 export function clearSimDevices(device?: string): void {
-  const prefix = device ? simNamespace(device) : SIM_PREFIX;
+  const prefix = baseNamespace + (device ? simNamespace(device) : SIM_PREFIX);
   try {
     for (const key of Object.keys(localStorage)) {
       if (key.startsWith(prefix)) localStorage.removeItem(key);

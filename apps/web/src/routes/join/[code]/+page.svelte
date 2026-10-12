@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { api, ApiError } from '$lib/api';
@@ -22,7 +23,7 @@
     const c = code;
     // Already joined from this phone: go straight back in.
     if (credentials.get(c)) {
-      goto(`/room/${c}`, { replaceState: true });
+      goto(`${base}/room/${c}`, { replaceState: true });
       return;
     }
     api<SessionLookup>(`/api/sessions/lookup/${encodeURIComponent(c)}`)
@@ -54,7 +55,7 @@
         displayName: r.participant.display_name,
         avatar: r.participant.avatar
       });
-      await goto(`/room/${r.join_code}`, { replaceState: true });
+      await goto(`${base}/room/${r.join_code}`, { replaceState: true });
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Could not join. Try again.';
       busy = false;
@@ -66,14 +67,14 @@
 
 <div class="lounge-bg"></div>
 <main class="page">
-  <header><a href="/" aria-label="Home"><Brand /></a></header>
+  <header><a href="{base}/" aria-label="Home"><Brand /></a></header>
 
   {#if lookupError}
     <section class="state card">
       <Icon name="alert" size={28} />
       <h1>Party not found</h1>
       <p class="muted">{lookupError}</p>
-      <a class="btn btn-ghost" href="/">Enter a different code</a>
+      <a class="btn btn-ghost" href="{base}/">Enter a different code</a>
     </section>
   {:else}
     <section class="intro">

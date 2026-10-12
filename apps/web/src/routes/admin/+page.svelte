@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { onDestroy, onMount } from 'svelte';
   import { api, ApiError } from '$lib/api';
+  import { avatarInfo } from '$lib/avatars';
   import AdminLogin from '$lib/components/AdminLogin.svelte';
   import Brand from '$lib/components/Brand.svelte';
   import Icon from '$lib/components/Icon.svelte';
@@ -76,14 +77,15 @@
     try {
       const r = await call<JoinResponse>(`/api/admin/sessions/${sessionId}/host`, {
         method: 'POST',
-        body: { display_name: prefs.name || 'Host' }
+        body: { display_name: prefs.name || 'Host', avatar: avatarInfo(prefs.avatar)?.id }
       });
       credentials.set({
         token: r.token,
         participantId: r.participant.id,
         sessionId: r.session_id,
         joinCode: r.join_code,
-        displayName: r.participant.display_name
+        displayName: r.participant.display_name,
+        avatar: r.participant.avatar
       });
       goto(`/room/${r.join_code}`);
     } catch (err) {

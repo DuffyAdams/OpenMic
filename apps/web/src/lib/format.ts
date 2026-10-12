@@ -48,7 +48,7 @@ export function ordinal(n: number): string {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-const AVG_SONG_SECONDS = 225;
+export const AVG_SONG_SECONDS = 225;
 
 /**
  * Approximate seconds until each pending item starts: remaining time of the current song plus
@@ -56,7 +56,7 @@ const AVG_SONG_SECONDS = 225;
  */
 export function waitTimes(state: RoomState, currentPosition: number): Map<string, number> {
   const out = new Map<string, number>();
-  const intro = state.session.intro_seconds ?? 8;
+  const intro = state.session.intro_seconds ?? 15;
   let t = 0;
   if (state.now_playing) {
     const total = state.now_playing.duration_seconds ?? AVG_SONG_SECONDS;

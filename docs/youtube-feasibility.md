@@ -71,3 +71,7 @@ Default quota is 10,000 units/day. A search costs ~101 units (`search.list` 100 
 1); a pasted-link lookup costs 1 (or 0 via oEmbed). The server stops searching at
 `YOUTUBE_DAILY_SEARCH_BUDGET` (default 90) and tells guests to paste links instead; identical
 searches within an hour reuse the cached result. Check usage in the Google Cloud console.
+
+The [songbook](songbook.md) uses no quota: its videos are chosen and checked offline, and adding
+one needs no lookup. Typed searches show songbook matches first and only call the API when the
+guest taps **Search YouTube**.

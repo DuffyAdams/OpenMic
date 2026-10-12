@@ -2,7 +2,14 @@ from fastapi import APIRouter, Depends, Query
 
 from app.deps import Auth, Services, current_auth, get_services
 from app.errors import AppError
-from app.schemas import ResolveResponse, SearchResponse, VideoOut
+from app.schemas import (
+    ResolveResponse,
+    SearchResponse,
+    SongbookCategoryOut,
+    SongbookResponse,
+    SongbookSongOut,
+    VideoOut,
+)
 from app.youtube import VideoInfo, extract_video_id
 
 router = APIRouter(prefix="/api", tags=["search"])
@@ -69,3 +76,38 @@ async def resolve(
         )
     info = await services.youtube.get_video(video_id)
     return ResolveResponse(video=video_out(info))
+
+
+@router.get("/songbook", response_model=SongbookResponse)
+async def songbook(
+    _auth: Auth = Depends(current_auth),
+    services: Services = Depends(get_services),
+):
+    """Curated songs by category, each with a ready-to-queue video. Costs no search quota."""
+    book = services.songbook
+    songs: list[SongbookSongOut] = []
+    for song in book.songs.values():
+        video = book.pick(song, services.youtube.is_unplayable)
+        info = video and book.video_info(video.video_id)
+        if info:
+            songs.append(
+                SongbookSongOut(
+                    id=song.id,
+                    title=song.title,
+                    artist=song.artist,
+                    duet=song.duet,
+                    video=video_out(info),
+                )
+            )
+    available = {s.id for s in songs}
+    categories = [
+        SongbookCategoryOut(
+            id=c.id,
+            name=c.name,
+            description=c.description,
+            song_ids=ids,
+        )
+        for c in book.categories
+        if (ids := [i for i in c.song_ids if i in available])
+    ]
+    return SongbookResponse(categories=categories, songs=songs)

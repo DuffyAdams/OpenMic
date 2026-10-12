@@ -39,7 +39,8 @@ async def enqueue(
     if actor.participant is None:
         raise forbidden("Join the party from your phone to add songs")
     services.limits.enqueue.check(actor.participant.id)
-    info = await services.youtube.get_video(body.video_id)
+    video_id = services.songbook.substitute(body.video_id, services.youtube.is_unplayable)
+    info = await services.youtube.get_video(video_id)
     item, position, duplicate, state = await services.rooms.add_item(
         party_id, actor, info, body.idempotency_key, body
     )

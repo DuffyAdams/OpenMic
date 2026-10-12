@@ -48,7 +48,7 @@
       {@const on = value.partner_id === g.id}
       <button class="who" role="radio" aria-checked={on} class:on onclick={() => pick(g.id)}>
         <span class="circle">
-          <Avatar id={g.id} name={g.display_name} size="52px" online={g.online} />
+          <Avatar id={g.id} name={g.display_name} avatar={g.avatar} size="52px" online={g.online} />
           {#if on}<span class="tick"><Icon name="check" size={13} stroke={3} /></span>{/if}
         </span>
         <span class="name">{g.display_name}</span>

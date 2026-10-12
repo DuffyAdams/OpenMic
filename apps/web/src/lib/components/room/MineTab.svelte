@@ -26,7 +26,7 @@
 
 <section class="mine">
   <header class="me">
-    <Avatar id={me} name={party.creds.displayName} size="96px" />
+    <Avatar id={me} name={party.creds.displayName} avatar={party.me?.avatar ?? party.creds.avatar} size="96px" />
     <div>
       <p class="kicker">{party.isHost ? 'Host' : 'Singer'}</p>
       <h2>{party.me?.display_name ?? party.creds.displayName}</h2>

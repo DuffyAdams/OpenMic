@@ -20,6 +20,7 @@ from app.realtime import Hub
 from app.routers import admin, public, search, sessions, tv, ws
 from app.security import Signer
 from app.services.rooms import RoomService
+from app.songbook import Songbook
 from app.youtube import YouTubeService
 
 log = logging.getLogger("openmic")
@@ -65,7 +66,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 await conn.run_sync(Base.metadata.create_all)
         sessionmaker = create_sessionmaker(engine)
         hub = Hub()
-        youtube = YouTubeService(settings)
+        songbook = Songbook.load(settings.songbook_path)
+        youtube = YouTubeService(settings, songbook=songbook)
         services = Services(
             settings=settings,
             engine=engine,
@@ -73,6 +75,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             hub=hub,
             rooms=RoomService(sessionmaker, hub, settings, on_unplayable=youtube.mark_unplayable),
             youtube=youtube,
+            songbook=songbook,
             signer=Signer(settings.secret_key),
             limits=Limits(),
         )
@@ -82,7 +85,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         reaper = asyncio.create_task(_reaper(services))
         log.info(
             "OpenMic API ready",
-            extra={"version": __version__, "search": services.youtube.provider},
+            extra={
+                "version": __version__,
+                "search": services.youtube.provider,
+                "songbook_songs": len(songbook),
+            },
         )
         try:
             yield

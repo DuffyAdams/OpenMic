@@ -72,10 +72,11 @@ try {
   async function phone() {
     return browser.newPage({ baseURL, viewport: { width: 430, height: 932 }, deviceScaleFactor: 2, hasTouch: true });
   }
-  async function join(name) {
+  async function join(name, avatar) {
     const page = await phone();
     await page.goto(`/join/${code}`);
     await page.getByLabel('Your name').fill(name);
+    await page.getByRole('radio', { name: avatar }).check();
     await page.getByRole('button', { name: /Join/ }).click();
     await expect(page.getByRole('navigation', { name: 'Sections' })).toBeVisible();
     return page;
@@ -84,7 +85,8 @@ try {
     await page.getByRole('button', { name: 'Search', exact: true }).first().click();
     await page.getByRole('searchbox').fill(query);
     await page.getByRole('searchbox').press('Enter');
-    await expect(page.getByText(`Results for “${query}”`)).toBeVisible();
+    // Songs in the songbook show up without a YouTube search.
+    await expect(page.getByText(`Results for “${query}”`).or(page.getByText('In the songbook'))).toBeVisible();
   }
   async function add(page, query) {
     await search(page, query);
@@ -93,9 +95,9 @@ try {
     await expect(page.getByRole('button', { name: 'Add to queue' })).toBeHidden();
   }
 
-  const maya = await join('Maya');
-  const jordan = await join('Jordan');
-  const sam = await join('Sam');
+  const maya = await join('Maya', 'Kitty Purry');
+  const jordan = await join('Jordan', 'Ribbit Astley');
+  const sam = await join('Sam', 'Llama Del Rey');
   await search(maya, 'Shallow');
   await maya.locator('.result').first().click();
   await maya.getByRole('radio', { name: 'Jordan', exact: true }).click();

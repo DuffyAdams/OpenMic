@@ -97,7 +97,7 @@
       {#if s.participants.length}
         <div class="guests">
           {#each s.participants.slice(0, 12) as p (p.id)}
-            <span class="guest"><Avatar id={p.id} name={p.display_name} size="3rem" /> {p.display_name}</span>
+            <span class="guest"><Avatar id={p.id} name={p.display_name} avatar={p.avatar} size="3rem" /> {p.display_name}</span>
           {/each}
         </div>
       {/if}

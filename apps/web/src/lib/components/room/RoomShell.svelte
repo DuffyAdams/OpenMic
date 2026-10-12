@@ -60,7 +60,12 @@
       </p>
     </div>
     <button class="me" onclick={() => (party.tab = 'mine')} aria-label="My songs">
-      <Avatar id={party.creds.participantId} name={party.me?.display_name ?? party.creds.displayName} size="38px" />
+      <Avatar
+        id={party.creds.participantId}
+        name={party.me?.display_name ?? party.creds.displayName}
+        avatar={party.me?.avatar ?? party.creds.avatar}
+        size="38px"
+      />
     </button>
   </header>
 

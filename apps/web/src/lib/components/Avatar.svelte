@@ -1,14 +1,19 @@
 <script lang="ts">
+  import { avatarInfo } from '$lib/avatars';
   import { hue, initials } from '$lib/format';
+  import AvatarArt from './AvatarArt.svelte';
 
   interface Props {
     id: string;
     name: string;
+    /** Picture key from $lib/avatars; initials when unset or unknown. */
+    avatar?: string | null;
     size?: string;
     online?: boolean | null;
   }
-  let { id, name, size = '36px', online = null }: Props = $props();
+  let { id, name, avatar = null, size = '36px', online = null }: Props = $props();
   const h = $derived(hue(id));
+  const art = $derived(avatarInfo(avatar));
 </script>
 
 <span
@@ -20,7 +25,11 @@
   title={name}
   aria-hidden="true"
 >
-  {initials(name)}
+  {#if art}
+    <span class="art"><AvatarArt avatar={art} /></span>
+  {:else}
+    {initials(name)}
+  {/if}
   {#if online !== null}
     <span class="dot" class:on={online}></span>
   {/if}
@@ -37,6 +46,12 @@
     letter-spacing: -0.02em;
     color: #fff;
     background: linear-gradient(135deg, hsl(var(--h) 55% 48%), hsl(calc(var(--h) + 40) 50% 30%));
+  }
+  .art {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
   }
   .dot {
     position: absolute;

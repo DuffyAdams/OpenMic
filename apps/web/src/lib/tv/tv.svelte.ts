@@ -19,7 +19,7 @@ import type { TvKey } from './keys';
 import { native } from './native';
 import { FakePlayer, YouTubePlayer, type PlayerAdapter, type PlayerState } from './player';
 
-const SECRET_KEY = 'ok:tv:secret';
+export const SECRET_KEY = 'ok:tv:secret';
 const PROGRESS_EVERY_MS = 5000;
 const AUTOPLAY_GRACE_MS = 12000;
 const START_TIMEOUT_MS = 90000;
@@ -72,6 +72,8 @@ export class TvController {
   playerState = $state<PlayerState>('unstarted');
   introEndsAt = $state(0);
   introHeldLeft = $state<number | null>(null);
+  /** The countdown is over but the video hasn't started yet: the intro card stays up meanwhile. */
+  starting = $state(false);
   needsGesture = $state(false);
   playerError = $state('');
   logs = $state<string[]>([]);
@@ -81,13 +83,15 @@ export class TvController {
     const s = this.room.state;
     if (!s || s.session.id !== this.sessionId) return 'boot';
     if (s.session.status === 'ended') return 'ended';
+    // If autoplay is blocked, the stage has to show so its "Press OK" prompt is visible.
+    const holding = this.starting && !this.needsGesture;
     switch (s.playback.phase) {
       case 'error':
         return 'error';
       case 'intro':
-        return this.introEndsAt > 0 || this.introHeldLeft !== null ? 'intro' : 'stage';
+        return this.introEndsAt > 0 || this.introHeldLeft !== null || holding ? 'intro' : 'stage';
       case 'playing':
-        return 'stage';
+        return holding ? 'intro' : 'stage';
       default:
         return 'lobby';
     }
@@ -265,6 +269,7 @@ export class TvController {
     this.failedKey = '';
     this.introEndsAt = 0;
     this.introHeldLeft = null;
+    this.starting = false;
     this.needsGesture = false;
     this.cancel('intro');
     this.cancel('watch1');
@@ -358,9 +363,18 @@ export class TvController {
     });
   }
 
+  /** OK on the remote during the up-next countdown: the singer is ready, start now. */
+  skipCountdown() {
+    if (this.introEndsAt === 0 || !this.loadedKey) return;
+    this.cancel('intro');
+    this.log('countdown skipped on remote');
+    this.beginPlayback(this.loadedKey);
+  }
+
   private beginPlayback(key: string) {
     this.introEndsAt = 0;
     this.introHeldLeft = null;
+    if (this.startedKey !== key) this.starting = true;
     this.player?.play();
     this.armWatchdogs(key);
   }
@@ -374,6 +388,8 @@ export class TvController {
     });
     this.later('watch2', START_TIMEOUT_MS, () => {
       if (this.loadedKey === key && this.startedKey !== key && !this.needsGesture) {
+        // Missed the "playing" event but the video is clearly moving: it did start.
+        if ((this.player?.time() ?? 0) > 1) return this.log('start watchdog: video is playing');
         this.onPlayerError('timeout');
       }
     });
@@ -387,6 +403,7 @@ export class TvController {
     if (!s?.now_playing || !key || key !== this.keyOf(s)) return;
     const itemId = s.now_playing.id;
     const gen = s.playback.generation;
+    if (ps === 'playing' || ps === 'paused' || ps === 'ended') this.starting = false;
 
     if (ps === 'playing') {
       this.cancel('watch1');
@@ -410,6 +427,7 @@ export class TvController {
     const s = this.room.state;
     const key = this.loadedKey;
     this.log(`player error ${code}`);
+    this.starting = false;
     if (!s?.now_playing || !key || key !== this.keyOf(s) || this.failedKey === key) return;
     this.failedKey = key;
     this.cancel('watch1');
@@ -692,6 +710,10 @@ export class TvController {
         return true;
       }
       this.openControls();
+      return true;
+    }
+    if (screen === 'intro' && key === 'select') {
+      this.skipCountdown();
       return true;
     }
     if (key === 'back') {

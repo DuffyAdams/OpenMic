@@ -409,6 +409,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/songbook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Songbook
+         * @description Curated songs by category, each with a ready-to-queue video. Costs no search quota.
+         */
+        get: operations["songbook_api_songbook_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/tv/me": {
         parameters: {
             query?: never;
@@ -555,6 +575,8 @@ export interface components {
     schemas: {
         /** AdminHostJoin */
         AdminHostJoin: {
+            /** Avatar */
+            avatar?: string | null;
             /**
              * Display Name
              * @default Host
@@ -692,6 +714,8 @@ export interface components {
         };
         /** HostClaimRequest */
         HostClaimRequest: {
+            /** Avatar */
+            avatar?: string | null;
             /** Display Name */
             display_name?: string | null;
             /** Invite */
@@ -716,6 +740,8 @@ export interface components {
         };
         /** JoinRequest */
         JoinRequest: {
+            /** Avatar */
+            avatar?: string | null;
             /** Display Name */
             display_name: string;
             /** Join Code */
@@ -734,6 +760,8 @@ export interface components {
         };
         /** MeOut */
         MeOut: {
+            /** Avatar */
+            avatar?: string | null;
             /** Display Name */
             display_name: string;
             /** Id */
@@ -758,6 +786,8 @@ export interface components {
         };
         /** ParticipantOut */
         ParticipantOut: {
+            /** Avatar */
+            avatar?: string | null;
             /** Display Name */
             display_name: string;
             /** Id */
@@ -959,6 +989,36 @@ export interface components {
             show_notifications?: boolean | null;
             /** Title */
             title?: string | null;
+        };
+        /** SongbookCategoryOut */
+        SongbookCategoryOut: {
+            /** Description */
+            description: string;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Song Ids */
+            song_ids: string[];
+        };
+        /** SongbookResponse */
+        SongbookResponse: {
+            /** Categories */
+            categories: components["schemas"]["SongbookCategoryOut"][];
+            /** Songs */
+            songs: components["schemas"]["SongbookSongOut"][];
+        };
+        /** SongbookSongOut */
+        SongbookSongOut: {
+            /** Artist */
+            artist: string;
+            /** Duet */
+            duet: boolean;
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            video: components["schemas"]["VideoOut"];
         };
         /** TvPlaybackRequest */
         TvPlaybackRequest: {
@@ -1842,6 +1902,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    songbook_api_songbook_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SongbookResponse"];
                 };
             };
         };

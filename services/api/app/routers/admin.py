@@ -209,14 +209,17 @@ async def host_join(
 ):
     """Give the admin a host identity in a party (so they can also queue songs)."""
     participant, token, state = await services.rooms.join(
-        party_id, body.display_name, role=Role.HOST
+        party_id, body.display_name, role=Role.HOST, avatar=body.avatar
     )
     return JoinResponse(
         token=token,
         session_id=party_id,
         join_code=state.session.join_code,
         participant=MeOut(
-            id=participant.id, display_name=participant.display_name, role=participant.role
+            id=participant.id,
+            display_name=participant.display_name,
+            avatar=participant.avatar,
+            role=participant.role,
         ),
         state=state,
     )

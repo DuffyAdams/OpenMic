@@ -1,4 +1,4 @@
-.PHONY: help dev lan test test-api test-web test-e2e build-web types apk apk-release install-tv deploy
+.PHONY: help dev lan test test-api test-web test-e2e build-web types songbook apk apk-release install-tv deploy
 
 help:            ## Show targets
 	@grep -E '^[a-z-]+:.*##' Makefile | sed 's/:.*## /\t/'
@@ -25,6 +25,9 @@ build-web:       ## Production build of the web app
 
 types:           ## Regenerate OpenAPI spec + TypeScript types after changing API schemas
 	cd apps/web && npm run gen:api
+
+songbook:        ## Find karaoke videos for songbook songs (ARGS=--check re-verifies saved ones)
+	uv run scripts/build-songbook.py $(ARGS)
 
 apk:             ## Debug APK
 	cd apps/fire-tv && ./gradlew assembleDebug

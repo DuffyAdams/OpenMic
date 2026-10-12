@@ -113,7 +113,7 @@ export class YouTubePlayer implements PlayerAdapter {
             host: 'https://www.youtube.com',
             playerVars: {
               autoplay: 0,
-              controls: 1, // keep YouTube's own controls and branding
+              controls: 0, // the remote drives playback through our own band, so hide YouTube's bar
               disablekb: 1, // the remote drives our UI, not the iframe
               fs: 0,
               iv_load_policy: 3,

@@ -20,9 +20,10 @@ object ServerConfig {
     fun tvPageUrl(base: String): String = "$base/tv"
 
     /**
-     * Accepts "karaoke.example.com", "https://karaoke.example.com/", "http://192.168.1.20:8000".
-     * Returns a canonical "scheme://host[:port]" (no trailing slash), or null if it isn't a URL.
-     * Bare hosts default to https, except private LAN addresses, which default to http.
+     * Accepts "karaoke.example.com", "https://karaoke.example.com/", "http://192.168.1.20:8000",
+     * or a server under a sub-path such as "https://example.com/openmic/".
+     * Returns a canonical "scheme://host[:port][/path]" (no trailing slash), or null if it isn't
+     * a URL. Bare hosts default to https, except private LAN addresses, which default to http.
      */
     fun normalize(input: String?): String? {
         var text = input?.trim().orEmpty().trimEnd('/')
@@ -35,7 +36,8 @@ object ServerConfig {
         val host = uri.host
         if ((scheme != "http" && scheme != "https") || host.isNullOrBlank()) return null
         val port = if (uri.port != -1) ":${uri.port}" else ""
-        return "$scheme://$host$port"
+        val path = uri.path.orEmpty().trimEnd('/')
+        return "$scheme://$host$port$path"
     }
 
     private fun looksLocal(hostPart: String): Boolean {

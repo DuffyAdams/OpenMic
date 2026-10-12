@@ -18,6 +18,7 @@ from app.security import (
     hash_token,
 )
 from app.services.rooms import Actor, RoomService
+from app.songbook import Songbook
 from app.youtube import YouTubeService
 
 # Guests may still read the final state of a party for a while after it ends.
@@ -32,6 +33,7 @@ class Services:
     hub: Hub
     rooms: RoomService
     youtube: YouTubeService
+    songbook: Songbook
     signer: Signer
     limits: Limits
 

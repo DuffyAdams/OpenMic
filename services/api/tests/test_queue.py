@@ -256,3 +256,23 @@ def test_removed_partner_keeps_name_on_duet(party):
     assert r.status_code == 200
     queued = r.json()["queue"][0]
     assert (queued["partner"], queued["partner_id"]) == ("Mike", None)
+
+
+def test_join_with_avatar(party):
+    c = party.api.c
+    r = c.post(
+        "/api/sessions/join",
+        json={"join_code": party.code, "display_name": "Ana", "avatar": "frog"},
+    )
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["participant"]["avatar"] == "frog"
+    me = next(p for p in body["state"]["participants"] if p["id"] == body["participant"]["id"])
+    assert me["avatar"] == "frog"
+    # No picture is fine (initials); a malformed key is rejected.
+    assert party.api.join(party.code, "Bo")
+    r = c.post(
+        "/api/sessions/join",
+        json={"join_code": party.code, "display_name": "Cy", "avatar": "<script>"},
+    )
+    assert r.status_code == 422

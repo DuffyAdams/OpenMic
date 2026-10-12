@@ -2,6 +2,8 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { api, ApiError } from '$lib/api';
+  import { avatarInfo, randomAvatar } from '$lib/avatars';
+  import AvatarPicker from '$lib/components/AvatarPicker.svelte';
   import Brand from '$lib/components/Brand.svelte';
   import Icon from '$lib/components/Icon.svelte';
   import { credentials, prefs } from '$lib/storage';
@@ -12,6 +14,7 @@
   let lookup = $state<SessionLookup | null>(null);
   let lookupError = $state('');
   let name = $state(prefs.name);
+  let avatar = $state(avatarInfo(prefs.avatar)?.id ?? randomAvatar());
   let busy = $state(false);
   let error = $state('');
 
@@ -39,15 +42,17 @@
     try {
       const r = await api<JoinResponse>('/api/sessions/join', {
         method: 'POST',
-        body: { join_code: code, display_name: displayName }
+        body: { join_code: code, display_name: displayName, avatar }
       });
       prefs.name = displayName;
+      prefs.avatar = avatar;
       credentials.set({
         token: r.token,
         participantId: r.participant.id,
         sessionId: r.session_id,
         joinCode: r.join_code,
-        displayName: r.participant.display_name
+        displayName: r.participant.display_name,
+        avatar: r.participant.avatar
       });
       await goto(`/room/${r.join_code}`, { replaceState: true });
     } catch (err) {
@@ -94,6 +99,8 @@
         autofocus
       />
       <p class="hint faint">Shown on the TV when it's your turn. No account needed.</p>
+      <AvatarPicker bind:value={avatar} />
+      <div class="gap"></div>
       <button class="btn btn-primary btn-lg btn-block" disabled={busy || !lookup}>
         {#if busy}Joining…{:else}Join &amp; pick a song{/if}
       </button>
@@ -122,6 +129,9 @@
   .hint {
     margin: 10px 2px 18px;
     font-size: 0.86rem;
+  }
+  .gap {
+    height: 22px;
   }
   .state {
     margin-top: 10vh;

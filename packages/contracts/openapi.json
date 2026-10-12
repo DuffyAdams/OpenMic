@@ -3,6 +3,19 @@
     "schemas": {
       "AdminHostJoin": {
         "properties": {
+          "avatar": {
+            "anyOf": [
+              {
+                "maxLength": 24,
+                "pattern": "^[a-z][a-z0-9-]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar"
+          },
           "display_name": {
             "default": "Host",
             "title": "Display Name",
@@ -426,6 +439,19 @@
       },
       "HostClaimRequest": {
         "properties": {
+          "avatar": {
+            "anyOf": [
+              {
+                "maxLength": 24,
+                "pattern": "^[a-z][a-z0-9-]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar"
+          },
           "display_name": {
             "anyOf": [
               {
@@ -476,6 +502,19 @@
       },
       "JoinRequest": {
         "properties": {
+          "avatar": {
+            "anyOf": [
+              {
+                "maxLength": 24,
+                "pattern": "^[a-z][a-z0-9-]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar"
+          },
           "display_name": {
             "title": "Display Name",
             "type": "string"
@@ -527,6 +566,17 @@
       },
       "MeOut": {
         "properties": {
+          "avatar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar"
+          },
           "display_name": {
             "title": "Display Name",
             "type": "string"
@@ -595,6 +645,17 @@
       },
       "ParticipantOut": {
         "properties": {
+          "avatar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar"
+          },
           "display_name": {
             "title": "Display Name",
             "type": "string"
@@ -1200,6 +1261,93 @@
           }
         },
         "title": "SettingsUpdate",
+        "type": "object"
+      },
+      "SongbookCategoryOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "song_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Song Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "song_ids"
+        ],
+        "title": "SongbookCategoryOut",
+        "type": "object"
+      },
+      "SongbookResponse": {
+        "properties": {
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/SongbookCategoryOut"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "songs": {
+            "items": {
+              "$ref": "#/components/schemas/SongbookSongOut"
+            },
+            "title": "Songs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "categories",
+          "songs"
+        ],
+        "title": "SongbookResponse",
+        "type": "object"
+      },
+      "SongbookSongOut": {
+        "properties": {
+          "artist": {
+            "title": "Artist",
+            "type": "string"
+          },
+          "duet": {
+            "title": "Duet",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "video": {
+            "$ref": "#/components/schemas/VideoOut"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "artist",
+          "duet",
+          "video"
+        ],
+        "title": "SongbookSongOut",
         "type": "object"
       },
       "TvPlaybackRequest": {
@@ -2608,6 +2756,28 @@
         "summary": "Get State",
         "tags": [
           "sessions"
+        ]
+      }
+    },
+    "/api/songbook": {
+      "get": {
+        "description": "Curated songs by category, each with a ready-to-queue video. Costs no search quota.",
+        "operationId": "songbook_api_songbook_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongbookResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Songbook",
+        "tags": [
+          "search"
         ]
       }
     },

@@ -69,13 +69,18 @@ async def join_session(
     party = await services.rooms.find_open_party_by_code(normalize_code(body.join_code))
     if party is None:
         raise not_found("No party found with that code. Check the code on the TV.")
-    participant, token, state = await services.rooms.join(party.id, body.display_name)
+    participant, token, state = await services.rooms.join(
+        party.id, body.display_name, avatar=body.avatar
+    )
     return JoinResponse(
         token=token,
         session_id=party.id,
         join_code=party.join_code,
         participant=MeOut(
-            id=participant.id, display_name=participant.display_name, role=participant.role
+            id=participant.id,
+            display_name=participant.display_name,
+            avatar=participant.avatar,
+            role=participant.role,
         ),
         state=state,
     )
@@ -110,13 +115,18 @@ async def claim_host(
         role = Role.HOST
     else:
         participant, token, state = await services.rooms.join(
-            party_id, body.display_name or "Host", role=Role.HOST
+            party_id, body.display_name or "Host", role=Role.HOST, avatar=body.avatar
         )
         role = participant.role
     return JoinResponse(
         token=token,
         session_id=party.id,
         join_code=party.join_code,
-        participant=MeOut(id=participant.id, display_name=participant.display_name, role=role),
+        participant=MeOut(
+            id=participant.id,
+            display_name=participant.display_name,
+            avatar=participant.avatar,
+            role=role,
+        ),
         state=state,
     )

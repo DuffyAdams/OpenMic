@@ -287,6 +287,7 @@ class RoomService:
                 ParticipantOut(
                     id=p.id,
                     display_name=p.display_name,
+                    avatar=p.avatar,
                     role=p.role,
                     joined_at=p.joined_at,
                     online=p.id in online,
@@ -456,12 +457,19 @@ class RoomService:
 
     # --- Participants -----------------------------------------------------------------------
 
-    async def join(self, party_id: str, display_name: str, role: str = Role.GUEST):
+    async def join(
+        self,
+        party_id: str,
+        display_name: str,
+        role: str = Role.GUEST,
+        avatar: str | None = None,
+    ):
         token = new_token(PARTICIPANT_PREFIX)
         async with self._mutate(party_id) as m:
             participant = Participant(
                 session_id=party_id,
                 display_name=display_name,
+                avatar=avatar,
                 role=role,
                 token_hash=hash_token(token),
                 last_seen_at=utcnow(),
@@ -472,7 +480,12 @@ class RoomService:
             m.audit("participant_joined", Actor(role, participant=participant), detail=role)
             m.emit(
                 "guest_joined",
-                {"participant_id": participant.id, "display_name": display_name, "role": role},
+                {
+                    "participant_id": participant.id,
+                    "display_name": display_name,
+                    "avatar": avatar,
+                    "role": role,
+                },
             )
         return participant, token, m.state
 
@@ -878,7 +891,11 @@ class RoomService:
                     accepted = True
                     m.audit("completed", actor, current.id)
             elif event == "failed":
-                if current.status in ItemStatus.ACTIVE:
+                if error_code == "timeout" and current.status == ItemStatus.PLAYING:
+                    # "Didn't start" contradicts an accepted `started` (e.g. a second TV tab whose
+                    # copy of the video never began): the song is playing, so keep it.
+                    m.audit("stale_event", actor, current.id, detail="timeout after start")
+                elif current.status in ItemStatus.ACTIVE:
                     reason = failure_reason(error_code)
                     current.status = ItemStatus.FAILED
                     current.failure_reason = reason

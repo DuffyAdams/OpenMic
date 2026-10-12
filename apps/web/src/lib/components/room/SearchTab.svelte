@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { api, ApiError } from '$lib/api';
+  import { onMount } from 'svelte';
+  import { ApiError } from '$lib/api';
   import { duration } from '$lib/format';
   import { useParty } from '$lib/party.svelte';
+  import { cachedSongbook, loadSongbook, matchSongs, songbookView } from '$lib/songbook';
   import { prefs } from '$lib/storage';
-  import type { ResolveResponse, SearchResponse, Video } from '$lib/types';
+  import type { ResolveResponse, SearchResponse, Songbook, SongbookSong, Video } from '$lib/types';
   import { looksLikeYouTubeLink, youtubeSearchUrl } from '$lib/youtube';
   import Icon from '../Icon.svelte';
   import Thumb from '../Thumb.svelte';
@@ -23,9 +25,25 @@
   let input: HTMLInputElement | undefined = $state();
   let controller: AbortController | null = null;
   let resolveTimer: ReturnType<typeof setTimeout> | undefined;
+  let book = $state<Songbook | null>(cachedSongbook());
+  let category = $state(songbookView.category);
 
   const isLink = $derived(looksLikeYouTubeLink(query));
+  const bookMatches = $derived(isLink ? [] : matchSongs(book, query));
+  const songsById = $derived(new Map(book?.songs.map((s) => [s.id, s]) ?? []));
+  const shelf = $derived(book?.categories.find((c) => c.id === category) ?? book?.categories[0]);
+  const shelfSongs = $derived(shelf ? shelf.song_ids.flatMap((id) => songsById.get(id) ?? []) : []);
   const canPaste = typeof navigator !== 'undefined' && !!navigator.clipboard?.readText && window.isSecureContext;
+
+  onMount(() => {
+    loadSongbook(() => party.call<Songbook>('/api/songbook'))
+      .then((b) => (book = b))
+      .catch(() => {}); // the songbook is optional: search and pasted links work without it
+  });
+
+  function pickCategory(id: string) {
+    category = songbookView.category = id;
+  }
 
   // "Find another version" from elsewhere in the app pre-fills the search.
   $effect(() => {
@@ -81,12 +99,26 @@
 
   function submit(e: Event) {
     e.preventDefault();
-    run();
+    find();
+  }
+
+  /** Songbook first: a YouTube search spends quota, so only run one when asked to. */
+  function find() {
+    if (isLink || !bookMatches.length) return run();
+    prefs.addRecentSearch(query.trim());
+    recent = prefs.recentSearches;
+    input?.blur();
   }
 
   function oninput() {
     clearTimeout(resolveTimer);
     if (isLink) resolveTimer = setTimeout(run, 350);
+    else if (searched || error) {
+      // Typing again leaves the last results behind for live songbook matches.
+      results = [];
+      searched = '';
+      error = null;
+    }
   }
 
   async function paste() {
@@ -224,19 +256,59 @@
       <p>No results for “{searched}”.</p>
       <p class="faint">Try the artist name, or turn off “Karaoke versions”.</p>
     </div>
+  {:else if bookMatches.length}
+    <p class="count faint">In the songbook</p>
+    <ul class="results">
+      {#each bookMatches as song (song.id)}{@render songRow(song)}{/each}
+    </ul>
+    {#if searchEnabled}
+      <button type="button" class="btn btn-ghost btn-block" onclick={run}>
+        <Icon name="search" size={18} /> Search YouTube for “{query.trim()}”
+      </button>
+    {:else}
+      <a class="btn btn-ghost btn-block" href={youtubeSearchUrl(query)} target="_blank" rel="noopener">
+        Find other versions on YouTube <Icon name="external" size={18} />
+      </a>
+    {/if}
   {:else}
     <div class="start">
-      {#if recent.length && searchEnabled}
+      {#if recent.length && (searchEnabled || book?.songs.length)}
         <p class="eyebrow">Recent</p>
         <div class="recent">
           {#each recent as r (r)}
-            <button class="chip toggle" onclick={() => { query = r; run(); }}>{r}</button>
+            <button class="chip toggle" onclick={() => { query = r; find(); }}>{r}</button>
           {/each}
+        </div>
+      {/if}
+      {#if book && shelf}
+        <div class="book">
+          <div class="book-head">
+            <p class="eyebrow">Songbook</p>
+            <p class="faint">Tap a song to add it. No searching needed.</p>
+          </div>
+          <div class="cats">
+            {#each book.categories as c (c.id)}
+              <button
+                type="button"
+                class="chip toggle"
+                class:on={c.id === shelf.id}
+                aria-pressed={c.id === shelf.id}
+                onclick={() => pickCategory(c.id)}
+              >
+                {c.name}
+              </button>
+            {/each}
+          </div>
+          {#if shelf.description}<p class="shelf-desc faint">{shelf.description}</p>{/if}
+          <ul class="results">
+            {#each shelfSongs as song (song.id)}{@render songRow(song)}{/each}
+          </ul>
         </div>
       {/if}
       <div class="tip card">
         <Icon name="sparkle" size={20} />
         <p>
+          {#if book && shelf}Not in the songbook?{/if}
           {#if searchEnabled}
             Search like <em>“Dancing Queen”</em> or <em>“Mr. Brightside”</em>. We'll find karaoke
             versions. You can also paste any YouTube link.
@@ -253,6 +325,27 @@
     </div>
   {/if}
 </section>
+
+{#snippet songRow(song: SongbookSong)}
+  <li>
+    <button class="result" onclick={() => (selected = song.video)}>
+      <Thumb videoId={song.video.video_id} src={song.video.thumbnail_url} width="104px" radius="var(--radius-xs)" />
+      <span class="info">
+        <span class="title">{song.title}</span>
+        <span class="meta">
+          {song.artist}{#if song.video.duration_seconds}&nbsp;· {duration(song.video.duration_seconds)}{/if}
+        </span>
+        {#if song.duet || party.queuedVideos.has(song.video.video_id)}
+          <span class="badges">
+            {#if party.queuedVideos.has(song.video.video_id)}<span class="chip chip-accent">In queue</span>{/if}
+            {#if song.duet}<span class="chip">Duet</span>{/if}
+          </span>
+        {/if}
+      </span>
+      <span class="add" aria-hidden="true"><Icon name="plus" size={18} stroke={2.4} /></span>
+    </button>
+  </li>
+{/snippet}
 
 <AddSheet video={selected} onclose={() => (selected = null)} onadded={() => { if (searched === 'link') clear(); }} />
 
@@ -483,6 +576,38 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+  }
+  .book {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .book-head p {
+    margin: 0;
+  }
+  .book-head .faint {
+    margin-top: 2px;
+    font-size: 0.88rem;
+  }
+  .cats {
+    display: flex;
+    gap: 8px;
+    /* Scroll edge to edge: the room content has a 16px side gutter. */
+    margin: 0 -16px;
+    padding: 2px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cats::-webkit-scrollbar {
+    display: none;
+  }
+  .cats .toggle {
+    flex: none;
+  }
+  .shelf-desc {
+    margin: 0;
+    font-size: 0.85rem;
   }
   .tip {
     display: flex;

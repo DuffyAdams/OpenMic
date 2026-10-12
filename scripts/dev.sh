@@ -30,5 +30,6 @@ trap 'kill $api 2>/dev/null' EXIT
 echo
 echo "  Songs:  $mode"
 echo "  TV:     http://localhost:5173/tv      Admin: http://localhost:5173/admin (password: $ADMIN_PASSWORD)"
+echo "  Sim:    http://localhost:5173/sim     TV + host phone + guest phones on one page"
 echo
 cd "$root/apps/web" && npm run dev

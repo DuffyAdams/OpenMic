@@ -231,3 +231,19 @@ def test_unplayable_memory_survives_restart(tmp_path):
         api.tv_event(tv, s["session_id"], "failed", item, 1, error_code="101")
     with TestClient(create_app(settings.model_copy(update={"db_create_all": False}))) as c:
         assert c.app.state.services.youtube.is_unplayable(vid(77))
+
+
+def test_start_timeout_after_started_is_ignored(party):
+    # Two TV tabs on one device: one plays the song, the other's start watchdog gives up.
+    api = party.api
+    _, ids = _setup(party)
+    api.command(party.tv, party.sid, "start")
+    api.tv_event(party.tv, party.sid, "started", ids[0], 1)
+    r = api.tv_event(party.tv, party.sid, "failed", ids[0], 1, error_code="timeout")
+    assert r["accepted"] is False
+    state = r["state"]
+    assert state["now_playing"]["id"] == ids[0] and state["now_playing"]["status"] == "playing"
+    assert state["playback"]["phase"] == "playing"
+    # A real player error mid-song still counts.
+    r = api.tv_event(party.tv, party.sid, "failed", ids[0], 1, error_code="5")
+    assert r["accepted"] is True and r["state"]["now_playing"]["id"] == ids[1]

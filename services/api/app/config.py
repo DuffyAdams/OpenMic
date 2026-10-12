@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     youtube_daily_search_budget: int = 90
     search_provider: str = "auto"  # auto | youtube | mock | none
     search_cache_ttl_seconds: int = 3600
+    # Curated songs guests can browse without searching. Empty = the bundled app/songbook.json.
+    songbook_path: str = ""
 
     default_party_title: str = "Karaoke Night"
     session_idle_hours: float = 12.0

@@ -11,7 +11,7 @@
   const item = $derived(s?.now_playing ?? null);
   const active = $derived(s?.playback.phase === 'playing' || s?.playback.phase === 'intro');
   const host = $derived(tv.joinBase.replace(/^https?:\/\//, ''));
-  const introSteps = [0, 4, 6, 8, 10, 12, 15, 20];
+  const introSteps = [0, 5, 10, 15, 20, 25, 30];
 
   function nextIntro(cur: number) {
     const i = introSteps.findIndex((v) => v > cur);
@@ -116,7 +116,14 @@
         <h2>{s?.queue.length ? `${s.queue.length} waiting` : 'Nothing queued'}</h2>
       </header>
       <ol class="q">
-        {#each s?.queue.slice(0, 8) ?? [] as q, i (q.id)}
+        {#if item && active}
+          <!-- The song on stage (or about to start) heads the line. -->
+          <li class="now">
+            <span class="n"><Icon name="mic" size="1.4rem" /></span>
+            <span class="t"><em>{s?.playback.phase === 'intro' ? 'Up next' : 'On stage'}</em><strong>{singers(item)}</strong>{item.title}</span>
+          </li>
+        {/if}
+        {#each s?.queue.slice(0, item && active ? 7 : 8) ?? [] as q, i (q.id)}
           <li><span class="n">{i + 1}</span><span class="t"><strong>{singers(q)}</strong>{q.title}</span></li>
         {/each}
       </ol>
@@ -306,6 +313,23 @@
   }
   .t strong {
     color: var(--text);
+  }
+  .q .now {
+    margin: 0 -1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--accent-soft);
+  }
+  .now .n {
+    color: var(--accent);
+  }
+  .t em {
+    font-style: normal;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
   }
   .diag {
     display: grid;

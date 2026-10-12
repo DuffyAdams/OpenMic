@@ -131,11 +131,11 @@
       {/if}
       <Stepper
         label="Up-next card"
-        hint="Seconds the TV shows the next singer"
+        hint="Seconds the TV shows what's coming up"
         value={s.session.intro_seconds}
         min={0}
-        max={20}
-        step={2}
+        max={30}
+        step={5}
         format={(v) => (v ? `${v}s` : 'Off')}
         onchange={(v) => party.settings({ intro_seconds: v })}
       />
@@ -167,7 +167,7 @@
       {#each s.participants as p (p.id)}
         <li>
           <button class="guest" onclick={() => (guestFor = p)} disabled={p.id === party.creds.participantId}>
-            <Avatar id={p.id} name={p.display_name} online={p.online ?? false} />
+            <Avatar id={p.id} name={p.display_name} avatar={p.avatar} online={p.online ?? false} />
             <span class="name">{p.display_name}{#if p.id === party.creds.participantId}&nbsp;<span class="faint">(you)</span>{/if}</span>
             {#if p.role === 'host'}<span class="chip chip-gold"><Icon name="crown" size={12} /> Host</span>{/if}
           </button>

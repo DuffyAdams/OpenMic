@@ -15,6 +15,7 @@ show from their phone or the Fire TV remote.
 ## From the couch to the chorus
 
 - **Scan, join, sing.** Guests use their phone browser; no downloads or sign-ups.
+- **Browse the songbook.** About 400 popular songs in categories, ready to add with two taps.
 - **Find your version.** Search YouTube karaoke videos or paste a link.
 - **Bring a duet partner.** Sing with another guest or add a friend who doesn't have a phone.
 - **Keep the party moving.** A shared live queue, singer announcements, and automatic playback.
@@ -71,6 +72,9 @@ cp services/api/.env.example services/api/.env   # optional: add YOUTUBE_API_KEY
 4. Press **Start the party** on the TV (Enter key) — it shows the singer card, then plays.
 
 TV keyboard shortcuts in a browser: arrows/Enter (D-pad), Esc (Back), `m` (Menu), `p` (play/pause).
+
+Prefer one window? <http://localhost:5173/sim> shows the TV, the host's phone and guest phones side
+by side, each with its own identity. **Set up party** pairs the TV and opens a fresh party in one click.
 
 No internet or key at all? `SEARCH_PROVIDER=mock ./scripts/dev.sh` runs an offline demo: search
 returns made-up songs and the TV plays them in a demo player (it shows "Demo mode"). Nothing real
@@ -129,6 +133,10 @@ guests paste links from the YouTube app (the app walks them through it). Each se
 (`YOUTUBE_DAILY_SEARCH_BUDGET`, default 90) and caches results. See
 [docs/youtube-feasibility.md](docs/youtube-feasibility.md).
 
+The [songbook](docs/songbook.md) costs no quota: its songs come with karaoke videos chosen and
+checked ahead of time, plus backups. Typed searches show songbook matches first, so YouTube is only
+searched when guests ask for more.
+
 ## Development
 
 ```bash
@@ -137,6 +145,7 @@ make test-web     # svelte-check
 make test-e2e     # Playwright: TV + phones against the real backend
 make apk          # Fire TV debug APK  → apps/fire-tv/app/build/outputs/apk/
 make types        # regenerate TypeScript API types after changing services/api/app/schemas.py
+make songbook     # find videos for new songs in services/api/songbook/songs.yaml (docs/songbook.md)
 ```
 
 To refresh the README screenshots with an isolated demo party:

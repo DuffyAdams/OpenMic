@@ -74,6 +74,8 @@ flow. This makes the system usable on day one.
 - **Idle parties auto-end** after 12 hours; the TV opens a fresh lobby 60 s after a party ends.
 - **Diagnostics panel** in the TV menu (connection, player state, event log) for Phase 0 testing.
 - **Nightly database backups** with retention, plus backup/restore scripts.
+- **Songbook**: about 400 curated songs in categories, each with pre-checked karaoke videos
+  and backups, so most picks cost no search quota ([songbook.md](songbook.md)).
 
 ## 9. Not built (non-goals or later)
 

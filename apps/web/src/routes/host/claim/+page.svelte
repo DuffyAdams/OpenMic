@@ -2,6 +2,8 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { api, ApiError } from '$lib/api';
+  import { avatarInfo, randomAvatar } from '$lib/avatars';
+  import AvatarPicker from '$lib/components/AvatarPicker.svelte';
   import Brand from '$lib/components/Brand.svelte';
   import Icon from '$lib/components/Icon.svelte';
   import { credentials, prefs } from '$lib/storage';
@@ -9,6 +11,7 @@
 
   let invite = $state('');
   let name = $state(prefs.name || credentials.last()?.displayName || '');
+  let avatar = $state(avatarInfo(prefs.avatar)?.id ?? randomAvatar());
   let busy = $state(false);
   let error = $state('');
 
@@ -30,15 +33,17 @@
       const r = await api<JoinResponse>('/api/host/claim', {
         method: 'POST',
         token: last?.token,
-        body: { invite, display_name: name.trim() || 'Host' }
+        body: { invite, display_name: name.trim() || 'Host', avatar }
       });
       if (name.trim()) prefs.name = name.trim();
+      prefs.avatar = avatar;
       credentials.set({
         token: r.token,
         participantId: r.participant.id,
         sessionId: r.session_id,
         joinCode: r.join_code,
-        displayName: r.participant.display_name
+        displayName: r.participant.display_name,
+        avatar: r.participant.avatar
       });
       await goto(`/room/${r.join_code}`, { replaceState: true });
     } catch (err) {
@@ -62,6 +67,7 @@
   <form class="card form" onsubmit={claim}>
     <label class="field-label" for="name">Your name</label>
     <input id="name" class="input" bind:value={name} maxlength="24" placeholder="Host" autocomplete="nickname" />
+    <AvatarPicker bind:value={avatar} />
     <button class="btn btn-gold btn-lg btn-block" disabled={busy || !invite}>
       {busy ? 'Connecting…' : 'Become the host'}
     </button>

@@ -1,0 +1,639 @@
+# OpenMic songbook: songs guests can browse and add without searching.
+#
+# After editing, run `make songbook` to find karaoke videos for new songs (no API key or quota
+# needed). The result is app/songbook.json, which the server loads at startup.
+#
+# Each song is written "Title - Artist" and may appear in several categories. Category order and
+# song order here are the order guests see. Long form for overrides:
+#   - {song: "Shallow - Lady Gaga & Bradley Cooper", videos: [VIDEO_ID, VIDEO_ID]}  # hand-picked
+#   - {song: "Golden - HUNTR/X", search: "golden kpop demon hunters karaoke"}       # custom search
+
+categories:
+  - name: Crowd Pleasers
+    description: Everybody knows the words
+    songs:
+      - Mr. Brightside - The Killers
+      - Don't Stop Believin' - Journey
+      - Bohemian Rhapsody - Queen
+      - Dancing Queen - ABBA
+      - Sweet Caroline - Neil Diamond
+      - I Wanna Dance with Somebody - Whitney Houston
+      - Livin' on a Prayer - Bon Jovi
+      - Wannabe - Spice Girls
+      - I Will Survive - Gloria Gaynor
+      - Africa - Toto
+      - Total Eclipse of the Heart - Bonnie Tyler
+      - Valerie - Amy Winehouse
+      - Girls Just Want to Have Fun - Cyndi Lauper
+      - Shake It Off - Taylor Swift
+      - Hey Ya! - OutKast
+      - Piano Man - Billy Joel
+      - Since U Been Gone - Kelly Clarkson
+      - Wonderwall - Oasis
+      - Uptown Funk - Mark Ronson ft. Bruno Mars
+      - Man! I Feel Like a Woman! - Shania Twain
+      - Respect - Aretha Franklin
+      - September - Earth, Wind & Fire
+      - Before He Cheats - Carrie Underwood
+      - Rolling in the Deep - Adele
+      - Mamma Mia - ABBA
+      - Take On Me - a-ha
+      - I Want It That Way - Backstreet Boys
+      - Friends in Low Places - Garth Brooks
+      - ...Baby One More Time - Britney Spears
+      - Killing Me Softly with His Song - Fugees
+      - I'm Gonna Be (500 Miles) - The Proclaimers
+      - Shout - The Isley Brothers
+      - Mambo No. 5 - Lou Bega
+      - Dancing on My Own - Robyn
+      - Love Shack - The B-52's
+      - Don't Stop Me Now - Queen
+      - Livin' la Vida Loca - Ricky Martin
+      - Shut Up and Dance - Walk the Moon
+      - Single Ladies (Put a Ring on It) - Beyoncé
+      - Bye Bye Bye - *NSYNC
+
+  - name: Duets
+    description: Grab a partner
+    duet: true
+    songs:
+      - Shallow - Lady Gaga & Bradley Cooper
+      - Islands in the Stream - Kenny Rogers & Dolly Parton
+      - Don't Go Breaking My Heart - Elton John & Kiki Dee
+      - (I've Had) The Time of My Life - Bill Medley & Jennifer Warnes
+      - You're the One That I Want - John Travolta & Olivia Newton-John
+      - Summer Nights - John Travolta & Olivia Newton-John
+      - Endless Love - Diana Ross & Lionel Richie
+      - Ain't No Mountain High Enough - Marvin Gaye & Tammi Terrell
+      - I Got You Babe - Sonny & Cher
+      - Picture - Kid Rock ft. Sheryl Crow
+      - Don't You Want Me - The Human League
+      - Up Where We Belong - Joe Cocker & Jennifer Warnes
+      - Somethin' Stupid - Frank Sinatra & Nancy Sinatra
+      - Under Pressure - Queen & David Bowie
+      - Say Something - A Great Big World & Christina Aguilera
+      - A Whole New World - Peabo Bryson & Regina Belle
+      - Love Is an Open Door - Kristen Bell & Santino Fontana
+      - Need You Now - Lady A
+      - Jackson - Johnny Cash & June Carter
+      - It Takes Two - Marvin Gaye & Kim Weston
+      - Señorita - Shawn Mendes & Camila Cabello
+      - Empire State of Mind - Jay-Z & Alicia Keys
+      - Dilemma - Nelly ft. Kelly Rowland
+      - The Boy Is Mine - Brandy & Monica
+      - Lucky - Jason Mraz & Colbie Caillat
+      - I Knew You Were Waiting (For Me) - Aretha Franklin & George Michael
+      - Beauty and the Beast - Celine Dion & Peabo Bryson
+      - Somebody That I Used to Know - Gotye ft. Kimbra
+      - Die with a Smile - Lady Gaga & Bruno Mars
+      - APT. - ROSÉ & Bruno Mars
+      - Defying Gravity - Idina Menzel & Kristin Chenoweth
+      - Stop Draggin' My Heart Around - Stevie Nicks & Tom Petty
+      - Don't Know Much - Linda Ronstadt & Aaron Neville
+      - Reunited - Peaches & Herb
+      - Cruisin' - Huey Lewis & Gwyneth Paltrow
+      - Leave the Door Open - Silk Sonic
+      - Rewrite the Stars - Zac Efron & Zendaya
+
+  - name: 60s & 70s
+    description: The classics
+    songs:
+      - Dancing Queen - ABBA
+      - Bohemian Rhapsody - Queen
+      - Sweet Caroline - Neil Diamond
+      - Respect - Aretha Franklin
+      - I Will Survive - Gloria Gaynor
+      - September - Earth, Wind & Fire
+      - Hotel California - Eagles
+      - Stayin' Alive - Bee Gees
+      - Don't Stop Me Now - Queen
+      - Go Your Own Way - Fleetwood Mac
+      - Dreams - Fleetwood Mac
+      - Brown Eyed Girl - Van Morrison
+      - Stand by Me - Ben E. King
+      - My Girl - The Temptations
+      - Hey Jude - The Beatles
+      - Let It Be - The Beatles
+      - Twist and Shout - The Beatles
+      - I'm a Believer - The Monkees
+      - Proud Mary - Tina Turner
+      - Son of a Preacher Man - Dusty Springfield
+      - These Boots Are Made for Walkin' - Nancy Sinatra
+      - Build Me Up Buttercup - The Foundations
+      - Superstition - Stevie Wonder
+      - Lean on Me - Bill Withers
+      - Ain't No Sunshine - Bill Withers
+      - Take Me Home, Country Roads - John Denver
+      - American Pie - Don McLean
+      - Tiny Dancer - Elton John
+      - Rocket Man - Elton John
+      - Crocodile Rock - Elton John
+      - Le Freak - Chic
+      - Y.M.C.A. - Village People
+      - Heart of Glass - Blondie
+      - You're So Vain - Carly Simon
+      - Waterloo - ABBA
+      - Mamma Mia - ABBA
+      - Shout - The Isley Brothers
+      - Killer Queen - Queen
+      - Landslide - Fleetwood Mac
+      - Bennie and the Jets - Elton John
+      - Imagine - John Lennon
+      - Daydream Believer - The Monkees
+      - Can't Help Falling in Love - Elvis Presley
+      - Suspicious Minds - Elvis Presley
+      - Oh, Pretty Woman - Roy Orbison
+      - Delilah - Tom Jones
+      - Unchained Melody - The Righteous Brothers
+      - Happy Together - The Turtles
+      - Leaving on a Jet Plane - John Denver
+      - I Walk the Line - Johnny Cash
+      - Three Little Birds - Bob Marley
+      - Yellow Submarine - The Beatles
+
+  - name: 80s
+    description: Big hair, bigger choruses
+    songs:
+      - Livin' on a Prayer - Bon Jovi
+      - Don't Stop Believin' - Journey
+      - Total Eclipse of the Heart - Bonnie Tyler
+      - Girls Just Want to Have Fun - Cyndi Lauper
+      - Take On Me - a-ha
+      - Africa - Toto
+      - I Wanna Dance with Somebody - Whitney Houston
+      - Billie Jean - Michael Jackson
+      - Beat It - Michael Jackson
+      - Like a Prayer - Madonna
+      - Material Girl - Madonna
+      - Footloose - Kenny Loggins
+      - Eye of the Tiger - Survivor
+      - Sweet Child o' Mine - Guns N' Roses
+      - Here I Go Again - Whitesnake
+      - Pour Some Sugar on Me - Def Leppard
+      - I Love Rock 'n' Roll - Joan Jett & the Blackhearts
+      - Hit Me with Your Best Shot - Pat Benatar
+      - Jessie's Girl - Rick Springfield
+      - 9 to 5 - Dolly Parton
+      - Come On Eileen - Dexys Midnight Runners
+      - Walking on Sunshine - Katrina and the Waves
+      - Time After Time - Cyndi Lauper
+      - Never Gonna Give You Up - Rick Astley
+      - Faith - George Michael
+      - Careless Whisper - George Michael
+      - Wake Me Up Before You Go-Go - Wham!
+      - Eternal Flame - The Bangles
+      - Manic Monday - The Bangles
+      - You Give Love a Bad Name - Bon Jovi
+      - Every Breath You Take - The Police
+      - Holding Out for a Hero - Bonnie Tyler
+      - Purple Rain - Prince
+      - Summer of '69 - Bryan Adams
+      - Don't You Want Me - The Human League
+      - Love Shack - The B-52's
+      - Like a Virgin - Madonna
+      - Karma Chameleon - Culture Club
+      - Tainted Love - Soft Cell
+      - Down Under - Men at Work
+      - Kiss - Prince
+      - Sweet Dreams (Are Made of This) - Eurythmics
+      - The Final Countdown - Europe
+      - Don't You (Forget About Me) - Simple Minds
+      - Jump - Van Halen
+      - Always - Bon Jovi
+      - Still Loving You - Scorpions
+      - Nothing's Gonna Stop Us Now - Starship
+      - Against All Odds (Take a Look at Me Now) - Phil Collins
+      - I'm Gonna Be (500 Miles) - The Proclaimers
+
+  - name: 90s
+    description: Pure nostalgia
+    songs:
+      - Wannabe - Spice Girls
+      - I Want It That Way - Backstreet Boys
+      - ...Baby One More Time - Britney Spears
+      - Wonderwall - Oasis
+      - Killing Me Softly with His Song - Fugees
+      - Man! I Feel Like a Woman! - Shania Twain
+      - No Scrubs - TLC
+      - Waterfalls - TLC
+      - Torn - Natalie Imbruglia
+      - Ironic - Alanis Morissette
+      - You Oughta Know - Alanis Morissette
+      - Smells Like Teen Spirit - Nirvana
+      - Livin' la Vida Loca - Ricky Martin
+      - Truly Madly Deeply - Savage Garden
+      - I Will Always Love You - Whitney Houston
+      - My Heart Will Go On - Celine Dion
+      - Genie in a Bottle - Christina Aguilera
+      - Tearin' Up My Heart - *NSYNC
+      - Everybody (Backstreet's Back) - Backstreet Boys
+      - Semi-Charmed Life - Third Eye Blind
+      - Zombie - The Cranberries
+      - Linger - The Cranberries
+      - What's Up? - 4 Non Blondes
+      - Gangsta's Paradise - Coolio
+      - Vogue - Madonna
+      - Losing My Religion - R.E.M.
+      - Kiss from a Rose - Seal
+      - Iris - Goo Goo Dolls
+      - Breakfast at Tiffany's - Deep Blue Something
+      - One Week - Barenaked Ladies
+      - All Star - Smash Mouth
+      - Believe - Cher
+      - Un-Break My Heart - Toni Braxton
+      - You're Still the One - Shania Twain
+      - MMMBop - Hanson
+      - Barbie Girl - Aqua
+      - No Rain - Blind Melon
+      - Creep - Radiohead
+      - I'll Be There for You - The Rembrandts
+      - Say You'll Be There - Spice Girls
+      - As Long as You Love Me - Backstreet Boys
+      - Kiss Me - Sixpence None the Richer
+      - Don't Speak - No Doubt
+      - Tubthumping - Chumbawamba
+      - Mambo No. 5 - Lou Bega
+      - Ms. Jackson - OutKast
+      - Jump Around - House of Pain
+      - I'd Do Anything for Love (But I Won't Do That) - Meat Loaf
+
+  - name: 2000s
+    description: Flip phones out
+    songs:
+      - Mr. Brightside - The Killers
+      - Hey Ya! - OutKast
+      - Since U Been Gone - Kelly Clarkson
+      - Valerie - Amy Winehouse
+      - Before He Cheats - Carrie Underwood
+      - Toxic - Britney Spears
+      - Oops!... I Did It Again - Britney Spears
+      - Bye Bye Bye - *NSYNC
+      - Crazy in Love - Beyoncé ft. Jay-Z
+      - Single Ladies (Put a Ring on It) - Beyoncé
+      - Umbrella - Rihanna ft. Jay-Z
+      - Hips Don't Lie - Shakira ft. Wyclef Jean
+      - Complicated - Avril Lavigne
+      - Sk8er Boi - Avril Lavigne
+      - Bad Romance - Lady Gaga
+      - Poker Face - Lady Gaga
+      - Love Story - Taylor Swift
+      - You Belong with Me - Taylor Swift
+      - Hollaback Girl - Gwen Stefani
+      - Seven Nation Army - The White Stripes
+      - I Kissed a Girl - Katy Perry
+      - Hot n Cold - Katy Perry
+      - Rehab - Amy Winehouse
+      - Yeah! - Usher ft. Lil Jon & Ludacris
+      - In da Club - 50 Cent
+      - Hey There Delilah - Plain White T's
+      - Chasing Cars - Snow Patrol
+      - Use Somebody - Kings of Leon
+      - I Gotta Feeling - The Black Eyed Peas
+      - The Middle - Jimmy Eat World
+      - Irreplaceable - Beyoncé
+      - Bleeding Love - Leona Lewis
+      - Crazy - Gnarls Barkley
+      - Teenage Dirtbag - Wheatus
+      - Party in the U.S.A. - Miley Cyrus
+      - SexyBack - Justin Timberlake
+      - Cry Me a River - Justin Timberlake
+      - Breakaway - Kelly Clarkson
+      - Bad Day - Daniel Powter
+      - Unwritten - Natasha Bedingfield
+      - Sugar, We're Goin Down - Fall Out Boy
+      - Hey, Soul Sister - Train
+      - Viva la Vida - Coldplay
+      - Just Dance - Lady Gaga
+      - Gold Digger - Kanye West ft. Jamie Foxx
+      - In the End - Linkin Park
+      - Bring Me to Life - Evanescence
+      - American Idiot - Green Day
+      - Halo - Beyoncé
+      - Live Like You Were Dying - Tim McGraw
+      - Jesus, Take the Wheel - Carrie Underwood
+
+  - name: 2010s & Today
+    description: Fresh off the charts
+    songs:
+      - Shake It Off - Taylor Swift
+      - Uptown Funk - Mark Ronson ft. Bruno Mars
+      - Rolling in the Deep - Adele
+      - Shallow - Lady Gaga & Bradley Cooper
+      - Someone Like You - Adele
+      - Hello - Adele
+      - Call Me Maybe - Carly Rae Jepsen
+      - Happy - Pharrell Williams
+      - Royals - Lorde
+      - Blank Space - Taylor Swift
+      - Firework - Katy Perry
+      - Roar - Katy Perry
+      - Teenage Dream - Katy Perry
+      - Just the Way You Are - Bruno Mars
+      - Locked Out of Heaven - Bruno Mars
+      - Shape of You - Ed Sheeran
+      - Perfect - Ed Sheeran
+      - Thinking Out Loud - Ed Sheeran
+      - Somebody That I Used to Know - Gotye ft. Kimbra
+      - Bad Guy - Billie Eilish
+      - Drivers License - Olivia Rodrigo
+      - Good 4 U - Olivia Rodrigo
+      - Flowers - Miley Cyrus
+      - As It Was - Harry Styles
+      - Watermelon Sugar - Harry Styles
+      - Levitating - Dua Lipa
+      - Don't Start Now - Dua Lipa
+      - Blinding Lights - The Weeknd
+      - Shut Up and Dance - Walk the Moon
+      - Anti-Hero - Taylor Swift
+      - Cruel Summer - Taylor Swift
+      - Espresso - Sabrina Carpenter
+      - Good Luck, Babe! - Chappell Roan
+      - Pink Pony Club - Chappell Roan
+      - Die with a Smile - Lady Gaga & Bruno Mars
+      - APT. - ROSÉ & Bruno Mars
+      - Golden - HUNTR/X
+      - Truth Hurts - Lizzo
+      - Old Town Road - Lil Nas X ft. Billy Ray Cyrus
+      - Dancing on My Own - Robyn
+      - Stay with Me - Sam Smith
+      - All of Me - John Legend
+      - Counting Stars - OneRepublic
+      - Can't Stop the Feeling! - Justin Timberlake
+      - When I Was Your Man - Bruno Mars
+      - Wrecking Ball - Miley Cyrus
+      - Vampire - Olivia Rodrigo
+      - Take Me to Church - Hozier
+      - Beautiful Things - Benson Boone
+      - Birds of a Feather - Billie Eilish
+      - Leave the Door Open - Silk Sonic
+      - Love On Top - Beyoncé
+      - Something in the Orange - Zach Bryan
+      - A Bar Song (Tipsy) - Shaboozey
+      - Rewrite the Stars - Zac Efron & Zendaya
+
+  - name: Power Ballads
+    description: Hold that note
+    songs:
+      - Total Eclipse of the Heart - Bonnie Tyler
+      - I Will Always Love You - Whitney Houston
+      - My Heart Will Go On - Celine Dion
+      - Alone - Heart
+      - I Want to Know What Love Is - Foreigner
+      - Every Rose Has Its Thorn - Poison
+      - Open Arms - Journey
+      - Faithfully - Journey
+      - Bed of Roses - Bon Jovi
+      - November Rain - Guns N' Roses
+      - I Don't Want to Miss a Thing - Aerosmith
+      - Heaven - Bryan Adams
+      - (Everything I Do) I Do It for You - Bryan Adams
+      - Making Love Out of Nothing at All - Air Supply
+      - Un-Break My Heart - Toni Braxton
+      - Because You Loved Me - Celine Dion
+      - The Power of Love - Celine Dion
+      - All by Myself - Celine Dion
+      - Without You - Mariah Carey
+      - Hero - Mariah Carey
+      - Listen - Beyoncé
+      - Nothing Compares 2 U - Sinéad O'Connor
+      - Is This Love - Whitesnake
+      - Wind Beneath My Wings - Bette Midler
+      - Greatest Love of All - Whitney Houston
+      - Someone Like You - Adele
+      - Bleeding Love - Leona Lewis
+      - Purple Rain - Prince
+      - Unchained Melody - The Righteous Brothers
+      - Always - Bon Jovi
+      - Still Loving You - Scorpions
+      - I'd Do Anything for Love (But I Won't Do That) - Meat Loaf
+      - Nothing's Gonna Stop Us Now - Starship
+      - Halo - Beyoncé
+      - Against All Odds (Take a Look at Me Now) - Phil Collins
+      - Don't Know Much - Linda Ronstadt & Aaron Neville
+      - All of Me - John Legend
+      - When I Was Your Man - Bruno Mars
+      - Stay with Me - Sam Smith
+
+  - name: Rock Anthems
+    description: Air guitar encouraged
+    songs:
+      - Bohemian Rhapsody - Queen
+      - Livin' on a Prayer - Bon Jovi
+      - Don't Stop Believin' - Journey
+      - Sweet Child o' Mine - Guns N' Roses
+      - Smells Like Teen Spirit - Nirvana
+      - Seven Nation Army - The White Stripes
+      - Mr. Brightside - The Killers
+      - Here I Go Again - Whitesnake
+      - Pour Some Sugar on Me - Def Leppard
+      - I Love Rock 'n' Roll - Joan Jett & the Blackhearts
+      - Eye of the Tiger - Survivor
+      - Summer of '69 - Bryan Adams
+      - Somebody to Love - Queen
+      - Another One Bites the Dust - Queen
+      - Born to Run - Bruce Springsteen
+      - Dancing in the Dark - Bruce Springsteen
+      - You Shook Me All Night Long - AC/DC
+      - Highway to Hell - AC/DC
+      - Paradise City - Guns N' Roses
+      - Basket Case - Green Day
+      - Boulevard of Broken Dreams - Green Day
+      - All the Small Things - blink-182
+      - Welcome to the Black Parade - My Chemical Romance
+      - Misery Business - Paramore
+      - Take Me Out - Franz Ferdinand
+      - Song 2 - Blur
+      - Rebel Yell - Billy Idol
+      - Barracuda - Heart
+      - Rock and Roll All Nite - Kiss
+      - Sweet Home Alabama - Lynyrd Skynyrd
+      - Hotel California - Eagles
+      - We Are the Champions - Queen
+      - Back in Black - AC/DC
+      - Should I Stay or Should I Go - The Clash
+      - Jump - Van Halen
+      - Everlong - Foo Fighters
+      - American Idiot - Green Day
+      - In the End - Linkin Park
+      - Bring Me to Life - Evanescence
+      - Killer Queen - Queen
+      - Creep - Radiohead
+      - The Final Countdown - Europe
+      - Sugar, We're Goin Down - Fall Out Boy
+
+  - name: Country
+    description: Boots on
+    songs:
+      - Friends in Low Places - Garth Brooks
+      - Man! I Feel Like a Woman! - Shania Twain
+      - Before He Cheats - Carrie Underwood
+      - Jolene - Dolly Parton
+      - 9 to 5 - Dolly Parton
+      - Take Me Home, Country Roads - John Denver
+      - Islands in the Stream - Kenny Rogers & Dolly Parton
+      - Need You Now - Lady A
+      - Jackson - Johnny Cash & June Carter
+      - You're Still the One - Shania Twain
+      - Any Man of Mine - Shania Twain
+      - Ring of Fire - Johnny Cash
+      - Folsom Prison Blues - Johnny Cash
+      - Achy Breaky Heart - Billy Ray Cyrus
+      - Strawberry Wine - Deana Carter
+      - Wagon Wheel - Darius Rucker
+      - Tennessee Whiskey - Chris Stapleton
+      - Fancy - Reba McEntire
+      - Gunpowder & Lead - Miranda Lambert
+      - Chicken Fried - Zac Brown Band
+      - Cruise - Florida Georgia Line
+      - Body Like a Back Road - Sam Hunt
+      - The Gambler - Kenny Rogers
+      - Stand by Your Man - Tammy Wynette
+      - Crazy - Patsy Cline
+      - Fast Car - Luke Combs
+      - Texas Hold 'Em - Beyoncé
+      - Goodbye Earl - The Chicks
+      - Redneck Woman - Gretchen Wilson
+      - I Hope You Dance - Lee Ann Womack
+      - Live Like You Were Dying - Tim McGraw
+      - Boot Scootin' Boogie - Brooks & Dunn
+      - Chattahoochee - Alan Jackson
+      - Something in the Orange - Zach Bryan
+      - A Bar Song (Tipsy) - Shaboozey
+      - Jesus, Take the Wheel - Carrie Underwood
+      - Margaritaville - Jimmy Buffett
+      - The Dance - Garth Brooks
+      - I Walk the Line - Johnny Cash
+      - Leaving on a Jet Plane - John Denver
+
+  - name: Hip-Hop & R&B
+    description: Bring the flow
+    songs:
+      - Hey Ya! - OutKast
+      - No Scrubs - TLC
+      - Waterfalls - TLC
+      - Crazy in Love - Beyoncé ft. Jay-Z
+      - Umbrella - Rihanna ft. Jay-Z
+      - Yeah! - Usher ft. Lil Jon & Ludacris
+      - In da Club - 50 Cent
+      - Gangsta's Paradise - Coolio
+      - Killing Me Softly with His Song - Fugees
+      - Empire State of Mind - Jay-Z & Alicia Keys
+      - Dilemma - Nelly ft. Kelly Rowland
+      - The Boy Is Mine - Brandy & Monica
+      - Ice Ice Baby - Vanilla Ice
+      - Baby Got Back - Sir Mix-a-Lot
+      - Bust a Move - Young MC
+      - Rapper's Delight - The Sugarhill Gang
+      - Lose Yourself - Eminem
+      - Without Me - Eminem
+      - Hot in Herre - Nelly
+      - Shoop - Salt-N-Pepa
+      - Push It - Salt-N-Pepa
+      - Gin and Juice - Snoop Dogg
+      - No Diggity - Blackstreet
+      - Return of the Mack - Mark Morrison
+      - Say My Name - Destiny's Child
+      - Survivor - Destiny's Child
+      - U Can't Touch This - MC Hammer
+      - California Love - 2Pac ft. Dr. Dre
+      - Super Bass - Nicki Minaj
+      - Fallin' - Alicia Keys
+      - Thong Song - Sisqó
+      - Truth Hurts - Lizzo
+      - Old Town Road - Lil Nas X ft. Billy Ray Cyrus
+      - Hypnotize - The Notorious B.I.G.
+      - Gold Digger - Kanye West ft. Jamie Foxx
+      - Ms. Jackson - OutKast
+      - Jump Around - House of Pain
+      - Love On Top - Beyoncé
+      - Just a Friend - Biz Markie
+      - Lady Marmalade - Christina Aguilera & Lil' Kim
+      - Bootylicious - Destiny's Child
+      - Leave the Door Open - Silk Sonic
+
+  - name: Disney & Musicals
+    description: Showtime
+    songs:
+      - Let It Go - Idina Menzel
+      - Love Is an Open Door - Kristen Bell & Santino Fontana
+      - A Whole New World - Peabo Bryson & Regina Belle
+      - Beauty and the Beast - Celine Dion & Peabo Bryson
+      - Part of Your World - Jodi Benson
+      - Under the Sea - Samuel E. Wright
+      - Hakuna Matata - The Lion King
+      - I Just Can't Wait to Be King - The Lion King
+      - Can You Feel the Love Tonight - Elton John
+      - Circle of Life - Elton John
+      - How Far I'll Go - Auli'i Cravalho
+      - You're Welcome - Dwayne Johnson
+      - We Don't Talk About Bruno - Encanto
+      - Surface Pressure - Jessica Darrow
+      - Reflection - Lea Salonga
+      - I'll Make a Man Out of You - Donny Osmond
+      - Go the Distance - Roger Bart
+      - Friend Like Me - Robin Williams
+      - This Is Me - Keala Settle
+      - The Greatest Show - Hugh Jackman
+      - Defying Gravity - Idina Menzel & Kristin Chenoweth
+      - {song: "Popular - Kristin Chenoweth", search: "popular wicked karaoke"}
+      - {song: "Memory - Elaine Paige", search: "memory cats karaoke"}
+      - Seasons of Love - Rent
+      - Don't Rain on My Parade - Barbra Streisand
+      - Summer Nights - John Travolta & Olivia Newton-John
+      - You're the One That I Want - John Travolta & Olivia Newton-John
+      - Mamma Mia - ABBA
+      - Golden - HUNTR/X
+      - Be Our Guest - Beauty and the Beast
+      - Kiss the Girl - The Little Mermaid
+      - The Bare Necessities - The Jungle Book
+      - Colors of the Wind - Pocahontas
+      - Do You Want to Build a Snowman? - Frozen
+      - Into the Unknown - Idina Menzel
+      - A Million Dreams - The Greatest Showman
+      - Rewrite the Stars - Zac Efron & Zendaya
+      - Hopelessly Devoted to You - Olivia Newton-John
+      - Can't Help Falling in Love - Elvis Presley
+
+  - name: Easy Starters
+    description: Great for first-timers
+    songs:
+      - Sweet Caroline - Neil Diamond
+      - Take Me Home, Country Roads - John Denver
+      - Stand by Me - Ben E. King
+      - Brown Eyed Girl - Van Morrison
+      - Lean on Me - Bill Withers
+      - Wonderwall - Oasis
+      - I'm a Believer - The Monkees
+      - Twist and Shout - The Beatles
+      - Hey Jude - The Beatles
+      - Let It Be - The Beatles
+      - All Star - Smash Mouth
+      - Riptide - Vance Joy
+      - Ho Hey - The Lumineers
+      - Ring of Fire - Johnny Cash
+      - Friends in Low Places - Garth Brooks
+      - Piano Man - Billy Joel
+      - Hey There Delilah - Plain White T's
+      - Shut Up and Dance - Walk the Moon
+      - Achy Breaky Heart - Billy Ray Cyrus
+      - Wagon Wheel - Darius Rucker
+      - Count on Me - Bruno Mars
+      - I'm Yours - Jason Mraz
+      - Bad Moon Rising - Creedence Clearwater Revival
+      - Build Me Up Buttercup - The Foundations
+      - Happy - Pharrell Williams
+      - I'm Gonna Be (500 Miles) - The Proclaimers
+      - Margaritaville - Jimmy Buffett
+      - Daydream Believer - The Monkees
+      - Can't Help Falling in Love - Elvis Presley
+      - Hey, Soul Sister - Train
+      - Three Little Birds - Bob Marley
+      - Yellow Submarine - The Beatles
+      - Happy Together - The Turtles
+      - Leaving on a Jet Plane - John Denver
+      - I Walk the Line - Johnny Cash
+      - Love Shack - The B-52's
+      - Imagine - John Lennon
+      - Bad Day - Daniel Powter
+      - Mamma Mia - ABBA
+      - Dancing Queen - ABBA

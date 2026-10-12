@@ -17,13 +17,16 @@ import re
 import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import parse_qs, quote, urlparse
 
 import httpx
 
 from app.config import Settings
 from app.errors import AppError
+
+if TYPE_CHECKING:
+    from app.songbook import Songbook
 
 log = logging.getLogger(__name__)
 
@@ -202,8 +205,14 @@ class YouTubeService:
     API = "https://www.googleapis.com/youtube/v3"
     OEMBED = "https://www.youtube.com/oembed"
 
-    def __init__(self, settings: Settings, http: httpx.AsyncClient | None = None):
+    def __init__(
+        self,
+        settings: Settings,
+        http: httpx.AsyncClient | None = None,
+        songbook: Songbook | None = None,
+    ):
         self.settings = settings
+        self.songbook = songbook
         self.provider = self._pick_provider(settings)
         self._http = http or httpx.AsyncClient(
             timeout=httpx.Timeout(8.0, connect=4.0),
@@ -390,6 +399,8 @@ class YouTubeService:
                 "This video already failed on the TV — the uploader blocks playback outside "
                 "YouTube. Try another version.",
             )
+        if self.songbook and (known := self.songbook.video_info(video_id)):
+            return known  # checked when the songbook was built; no lookup needed
         cached = self._video_cache.get(video_id)
         if cached is not None:
             return cached

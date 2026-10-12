@@ -10,6 +10,8 @@ export type SessionInfo = S['SessionOut'];
 export type Video = S['VideoOut'];
 export type SearchResponse = S['SearchResponse'];
 export type ResolveResponse = S['ResolveResponse'];
+export type Songbook = S['SongbookResponse'];
+export type SongbookSong = S['SongbookSongOut'];
 export type JoinResponse = S['JoinResponse'];
 export type EnqueueResponse = S['EnqueueResponse'];
 export type PublicConfig = S['PublicConfig'];
@@ -46,6 +48,7 @@ export interface RoomEvent {
     item_id?: string;
     participant_id?: string;
     display_name?: string;
+    avatar?: string | null;
     singer?: string;
     partner_id?: string | null;
     partner?: string | null;
@@ -87,4 +90,5 @@ export interface Credentials {
   sessionId: string;
   joinCode: string;
   displayName: string;
+  avatar?: string | null;
 }

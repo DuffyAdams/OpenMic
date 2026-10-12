@@ -128,7 +128,7 @@ class Party(Base):
 
     # Settings
     queue_open: Mapped[bool] = mapped_column(Boolean, default=True)
-    intro_seconds: Mapped[int] = mapped_column(Integer, default=8)
+    intro_seconds: Mapped[int] = mapped_column(Integer, default=15)
     auto_skip_failed: Mapped[bool] = mapped_column(Boolean, default=True)
     max_pending_per_guest: Mapped[int] = mapped_column(Integer, default=0)  # 0 = unlimited
     show_notifications: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -154,6 +154,8 @@ class Participant(Base):
         ForeignKey("sessions.id", ondelete="CASCADE"), index=True
     )
     display_name: Mapped[str] = mapped_column(String(32))
+    # Key of a picture in the web app's avatar set; None (or an unknown key) shows initials.
+    avatar: Mapped[str | None] = mapped_column(String(24), nullable=True)
     role: Mapped[str] = mapped_column(String(16), default=Role.GUEST)
     token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     joined_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utcnow)

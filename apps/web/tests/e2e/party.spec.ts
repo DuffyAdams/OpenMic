@@ -69,9 +69,11 @@ test('a full karaoke party, from pairing to the last song', async ({ browser, re
   const mike = await joinAs(browser, joinCode, 'Mike');
   await expect(tv.getByText('2 singers')).toBeVisible();
 
-  // Jessica searches and adds the first result.
+  // Jessica searches and adds the first result. The songbook answers first; YouTube on request.
   await jess.getByRole('searchbox').fill('dancing queen');
   await jess.getByRole('searchbox').press('Enter');
+  await expect(jess.getByText('In the songbook')).toBeVisible();
+  await jess.getByRole('button', { name: 'Search YouTube for “dancing queen”' }).click();
   await expect(jess.getByText('Results for “dancing queen”')).toBeVisible();
   await settle(jess);
   await jess.screenshot({ path: `${SHOTS}/phone-2-results.png` });
@@ -117,9 +119,9 @@ test('a full karaoke party, from pairing to the last song', async ({ browser, re
   await host.getByLabel('Your name').fill('Duffy');
   await host.getByRole('button', { name: 'Become the host' }).click();
   await expect(host.getByRole('heading', { name: 'Start the party' })).toBeVisible();
-  // Shorten the up-next card for the test: 8s → 2s.
-  for (let i = 0; i < 3; i++) await host.getByRole('button', { name: 'Decrease Up-next card' }).click();
-  await expect(host.locator('output').first()).toHaveText('2s');
+  // Shorten the up-next card for the test: 15s → 5s.
+  for (let i = 0; i < 2; i++) await host.getByRole('button', { name: 'Decrease Up-next card' }).click();
+  await expect(host.locator('output').first()).toHaveText('5s');
   await settle(host);
   await host.screenshot({ path: `${SHOTS}/phone-4-host.png`, fullPage: true });
 
@@ -206,6 +208,43 @@ test('a full karaoke party, from pairing to the last song', async ({ browser, re
   expect(await code(tv)).not.toBe(joinCode);
 });
 
+test('guests add songs from the songbook without searching', async ({ browser }) => {
+  const tvCtx = await context(browser, { viewport: { width: 1280, height: 720 } });
+  const tv = await tvCtx.newPage();
+  await tv.goto('/tv?player=fake');
+  await expect(tv.getByRole('heading', { name: 'Pair this TV' })).toBeVisible();
+  const pairingCode = await code(tv);
+  const login = await tv.request.post('/api/admin/login', { data: { password: ADMIN_PASSWORD } });
+  await tv.request.post('/api/admin/devices/pair', {
+    data: { code: pairingCode },
+    headers: { Authorization: `Bearer ${(await login.json()).token}` }
+  });
+  await expect(tv.getByRole('button', { name: 'Start the party' })).toBeVisible({ timeout: 15_000 });
+  const guest = await joinAs(browser, await code(tv), 'Ana');
+
+  // Browse a category and add a song.
+  await expect(guest.getByText('Songbook', { exact: true })).toBeVisible();
+  const duets = guest.getByRole('button', { name: 'Duets', exact: true });
+  await duets.click();
+  await expect(duets).toHaveAttribute('aria-pressed', 'true');
+  await expect(guest.locator('.book .result').first()).toContainText('Duet');
+  await guest.locator('.book .result').first().click();
+  await guest.getByRole('button', { name: 'Add to queue' }).click();
+  await expect(guest.getByText('Added to the queue!')).toBeVisible();
+  await expect(tv.locator('.queue li')).toHaveCount(1);
+
+  // Typing matches the songbook instantly, and Enter doesn't spend a YouTube search.
+  await guest.getByRole('searchbox').fill('brightside');
+  await expect(guest.getByText('In the songbook')).toBeVisible();
+  await guest.getByRole('searchbox').press('Enter');
+  await expect(guest.getByText(/Results for/)).toHaveCount(0);
+  await expect(guest.locator('.result').first()).toContainText('Mr. Brightside');
+  await guest.locator('.result').first().click();
+  await guest.getByRole('button', { name: 'Add to queue' }).click();
+  await expect(tv.locator('.queue li')).toHaveCount(2);
+  await expect(tv.locator('.queue li').last()).toContainText('Mr. Brightside – The Killers');
+});
+
 test('TV resumes the current song after a reload', async ({ browser }) => {
   const tvCtx = await context(browser, { viewport: { width: 1280, height: 720 } });
   const tv = await tvCtx.newPage();
@@ -226,6 +265,8 @@ test('TV resumes the current song after a reload', async ({ browser }) => {
   await guest.getByRole('searchbox').fill('https://youtu.be/song0000009');
   await guest.getByRole('button', { name: 'Add to queue' }).click();
   await tv.keyboard.press('Enter'); // "Start the party" has focus
+  await expect(tv.locator('.singer')).toHaveText('Ana');
+  await tv.keyboard.press('Enter'); // skip the up-next countdown
   const fake = tv.getByTestId('fake-player');
   await expect(fake).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
   await tv.waitForTimeout(6000); // let a progress report land
@@ -286,8 +327,11 @@ test('confirm sheets and the TV skip dialog act on the right song', async ({ bro
 
   // TV remote: fast-forward asks for confirmation; Up selects "Skip song"; OK skips.
   await host.getByRole('button', { name: 'Start the party' }).last().click();
+  // The up-next card runs 15s by default; OK on the remote starts the song straight away.
+  await expect(tv.getByText('Press OK to start', { exact: false })).toBeVisible({ timeout: 10_000 });
+  await tv.keyboard.press('Enter');
   const fake = tv.getByTestId('fake-player');
-  await expect(fake).toHaveAttribute('data-state', 'playing', { timeout: 20_000 });
+  await expect(fake).toHaveAttribute('data-state', 'playing', { timeout: 8_000 });
   const firstId = await tv.locator('.fp-id').textContent();
   await tv.keyboard.press('n'); // not mapped → ignored
   await tv.keyboard.press('MediaTrackNext');
@@ -297,5 +341,6 @@ test('confirm sheets and the TV skip dialog act on the right song', async ({ bro
   await expect(tv.getByRole('button', { name: 'Skip song' })).toBeFocused();
   await tv.keyboard.press('Enter');
   await expect(tv.locator('.singer')).toHaveText('Ana', { timeout: 10_000 }); // next song's intro
+  await tv.keyboard.press('Enter');
   await expect(tv.locator('.fp-id')).not.toHaveText(firstId ?? '', { timeout: 20_000 });
 });

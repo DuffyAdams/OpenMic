@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -18,12 +18,17 @@ def clean_display_name(value: str) -> str:
     return name
 
 
+# The set of pictures lives in the web app; the server only checks the key's shape.
+AvatarKey = Annotated[str, Field(max_length=24, pattern=r"^[a-z][a-z0-9-]*$")]
+
+
 # --- Room state (REST responses and WebSocket broadcasts) ------------------------------------
 
 
 class ParticipantOut(BaseModel):
     id: str
     display_name: str
+    avatar: str | None = None
     role: RoleT
     joined_at: datetime
     online: bool = False
@@ -146,6 +151,7 @@ class SessionLookup(BaseModel):
 class JoinRequest(BaseModel):
     join_code: str = Field(min_length=4, max_length=12)
     display_name: str
+    avatar: AvatarKey | None = None
 
     _name = field_validator("display_name")(clean_display_name)
 
@@ -153,6 +159,7 @@ class JoinRequest(BaseModel):
 class MeOut(BaseModel):
     id: str
     display_name: str
+    avatar: str | None = None
     role: RoleT
 
 
@@ -167,6 +174,7 @@ class JoinResponse(BaseModel):
 class HostClaimRequest(BaseModel):
     invite: str = Field(min_length=10, max_length=400)
     display_name: str | None = None
+    avatar: AvatarKey | None = None
 
     @field_validator("display_name")
     @classmethod
@@ -192,6 +200,26 @@ class SearchResponse(BaseModel):
 
 class ResolveResponse(BaseModel):
     video: VideoOut
+
+
+class SongbookSongOut(BaseModel):
+    id: str
+    title: str
+    artist: str
+    duet: bool
+    video: VideoOut  # the version guests get: the first backup no TV has reported broken
+
+
+class SongbookCategoryOut(BaseModel):
+    id: str
+    name: str
+    description: str
+    song_ids: list[str]
+
+
+class SongbookResponse(BaseModel):
+    categories: list[SongbookCategoryOut]
+    songs: list[SongbookSongOut]
 
 
 class DuetPartner(BaseModel):
@@ -307,6 +335,7 @@ class DeviceRename(BaseModel):
 
 class AdminHostJoin(BaseModel):
     display_name: str = "Host"
+    avatar: AvatarKey | None = None
 
     _name = field_validator("display_name")(clean_display_name)
 

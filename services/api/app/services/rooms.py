@@ -552,20 +552,7 @@ class RoomService:
             else:
                 if not party.queue_open and not actor.is_host:
                     raise AppError(409, "queue_locked", "The host has paused new requests.")
-                if party.max_pending_per_guest and not actor.is_host:
-                    mine = await m.db.scalar(
-                        select(func.count(QueueItem.id)).where(
-                            QueueItem.session_id == party_id,
-                            QueueItem.participant_id == actor.participant.id,
-                            QueueItem.status == ItemStatus.PENDING,
-                        )
-                    )
-                    if mine >= party.max_pending_per_guest:
-                        raise AppError(
-                            409,
-                            "too_many_requests",
-                            f"You can have up to {party.max_pending_per_guest} songs waiting.",
-                        )
+                await self._check_pending_limit(m, actor)
                 last_key = await m.db.scalar(
                     select(func.max(QueueItem.sort_key)).where(
                         QueueItem.session_id == party_id, QueueItem.status == ItemStatus.PENDING
@@ -613,6 +600,22 @@ class RoomService:
             )
             await self.hub.broadcast(party_id, event.model_dump(mode="json"))
         return item_out, position, duplicate, m.state
+
+    @staticmethod
+    async def _check_pending_limit(m: _Mutation, actor: Actor) -> None:
+        """Enforce the host's "songs waiting per guest" setting (hosts are exempt)."""
+        limit = m.party.max_pending_per_guest
+        if not limit or actor.is_host or actor.participant is None:
+            return
+        mine = await m.db.scalar(
+            select(func.count(QueueItem.id)).where(
+                QueueItem.session_id == m.party.id,
+                QueueItem.participant_id == actor.participant.id,
+                QueueItem.status == ItemStatus.PENDING,
+            )
+        )
+        if mine >= limit:
+            raise AppError(409, "too_many_requests", f"You can have up to {limit} songs waiting.")
 
     @staticmethod
     async def _resolve_partner(
@@ -710,6 +713,7 @@ class RoomService:
                 raise AppError(409, "item_in_queue", "That song is already in the queue.")
             if not m.party.queue_open and not actor.is_host:
                 raise AppError(409, "queue_locked", "The host has paused new requests.")
+            await self._check_pending_limit(m, actor)
             last_key = await m.db.scalar(
                 select(func.max(QueueItem.sort_key)).where(
                     QueueItem.session_id == party_id, QueueItem.status == ItemStatus.PENDING
@@ -749,8 +753,6 @@ class RoomService:
             raise forbidden("Only the host can change settings")
         async with self._mutate(party_id) as m:
             for key, value in update.model_dump(exclude_none=True).items():
-                if key == "title":
-                    value = " ".join(value.split())
                 if getattr(m.party, key) != value:
                     setattr(m.party, key, value)
                     m.changed = True

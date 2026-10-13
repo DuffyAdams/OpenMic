@@ -88,6 +88,32 @@ def test_max_pending_per_guest(party):
     assert api.add(g.token, party.sid, vid(3), expect=409)["error"]["code"] == "too_many_requests"
 
 
+def test_requeue_respects_max_pending_per_guest(party):
+    api = party.api
+    api.c.patch(
+        f"/api/sessions/{party.sid}/settings",
+        json={"max_pending_per_guest": 1},
+        headers=auth(party.tv),
+    )
+    g = api.join(party.code, "G")
+    first = api.add(g.token, party.sid, vid(1))["item"]["id"]
+    api.c.delete(f"/api/sessions/{party.sid}/queue/{first}", headers=auth(g.token))
+    again = f"/api/sessions/{party.sid}/queue/{first}/requeue"
+    assert api.c.post(again, headers=auth(g.token)).status_code == 200
+    r = api.c.post(again, headers=auth(g.token))
+    assert r.status_code == 409 and r.json()["error"]["code"] == "too_many_requests"
+    # Hosts (here the TV) are exempt, as for normal requests.
+    assert api.c.post(again, headers=auth(party.tv)).status_code == 200
+
+
+def test_blank_party_title_rejected(party):
+    url = f"/api/sessions/{party.sid}/settings"
+    r = party.api.c.patch(url, json={"title": "   "}, headers=auth(party.tv))
+    assert r.status_code == 422
+    r = party.api.c.patch(url, json={"title": "  Friday   Night "}, headers=auth(party.tv))
+    assert r.status_code == 200 and r.json()["session"]["title"] == "Friday Night"
+
+
 def test_host_reorder_keeps_fifo_for_new_items(party):
     api = party.api
     g = api.join(party.code, "G")

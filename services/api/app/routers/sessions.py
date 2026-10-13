@@ -87,6 +87,8 @@ async def requeue_item(
     actor: Actor = Depends(party_actor),
     services: Services = Depends(get_services),
 ):
+    if actor.participant is not None:
+        services.limits.enqueue.check(actor.participant.id)
     return await services.rooms.requeue_item(party_id, actor, item_id)
 
 

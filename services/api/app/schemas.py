@@ -284,6 +284,16 @@ class SettingsUpdate(BaseModel):
     max_pending_per_guest: int | None = Field(default=None, ge=0, le=20)
     show_notifications: bool | None = None
 
+    @field_validator("title")
+    @classmethod
+    def _title(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        title = " ".join(v.split())
+        if not title:
+            raise ValueError("The party name can't be blank")
+        return title
+
 
 class AdminLoginRequest(BaseModel):
     password: str = Field(min_length=1, max_length=200)

@@ -101,6 +101,9 @@ class MainActivity : Activity() {
         val newUrl = intent?.getStringExtra(EXTRA_SERVER_URL)?.let { ServerConfig.normalize(it) }
         if (newUrl != null && newUrl != baseUrl) {
             ServerConfig.save(this, newUrl)
+            // recreate() re-runs onCreate with getIntent(); without this, the launch intent's
+            // older server_url extra would be saved back over the new one.
+            setIntent(intent)
             recreate()
         }
     }

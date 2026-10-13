@@ -335,9 +335,13 @@ export class TvController {
     // Same item: honour restart and pause/resume.
     if (pb.restart_seq !== this.appliedRestart) {
       this.appliedRestart = pb.restart_seq;
-      this.player.seek(0);
-      if (this.introEndsAt === 0 && this.introHeldLeft === null) this.player.play();
-      this.log('restarted');
+      // During the up-next countdown nothing has played yet, so there is nothing to restart, and
+      // seeking a cued YouTube video would start it before the countdown ends.
+      if (this.introEndsAt === 0 && this.introHeldLeft === null) {
+        this.player.seek(0);
+        this.player.play();
+        this.log('restarted');
+      }
     }
     if (pb.phase === 'intro' && (this.introEndsAt > 0 || this.introHeldLeft !== null)) {
       if (pb.paused && this.introEndsAt > 0) {

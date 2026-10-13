@@ -125,13 +125,16 @@ def test_host_can_promote_and_remove_guests(party):
 def test_rate_limit_on_join(tmp_path):
     app = create_app(make_settings(tmp_path))
     with TestClient(app) as c:
+        limit = app.state.services.limits.join.limit
+        # A party's guests usually share one IP, so a crowd joining at once must fit.
+        assert limit >= 40
         statuses = [
             c.post(
                 "/api/sessions/join", json={"join_code": "AAAAAA", "display_name": "X"}
             ).status_code
-            for _ in range(14)
+            for _ in range(limit + 1)
         ]
-    assert statuses[:12] == [404] * 12 and statuses[-1] == 429
+    assert statuses[:limit] == [404] * limit and statuses[-1] == 429
 
 
 def test_production_requires_secrets(tmp_path):

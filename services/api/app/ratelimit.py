@@ -41,8 +41,10 @@ class RateLimiter:
 
 class Limits:
     def __init__(self):
-        self.join = RateLimiter(12, 60, "join")
-        self.lookup = RateLimiter(30, 60, "lookup")
+        # Per IP. A whole party usually shares one home IP (NAT), so these allow a crowd joining
+        # at once while still making join-code guessing hopeless.
+        self.join = RateLimiter(60, 60, "join")
+        self.lookup = RateLimiter(120, 60, "lookup")
         self.search = RateLimiter(15, 60, "search")
         self.resolve = RateLimiter(30, 60, "resolve")
         self.enqueue = RateLimiter(12, 60, "enqueue")

@@ -114,6 +114,23 @@ def test_blank_party_title_rejected(party):
     assert r.status_code == 200 and r.json()["session"]["title"] == "Friday Night"
 
 
+
+def test_theme_setting(party):
+    api = party.api
+    url = f"/api/sessions/{party.sid}/settings"
+    assert party.state()["session"]["theme"] == "classic"
+    g = api.join(party.code, "G")
+    assert api.c.patch(url, json={"theme": "halloween"}, headers=auth(g.token)).status_code == 403
+    assert api.c.patch(url, json={"theme": "disco"}, headers=auth(party.tv)).status_code == 422
+    r = api.c.patch(url, json={"theme": "halloween"}, headers=auth(party.tv))
+    assert r.status_code == 200 and r.json()["session"]["theme"] == "halloween"
+    # The join page shows the party's look before anyone signs in.
+    assert api.c.get(f"/api/sessions/lookup/{party.code}").json()["theme"] == "halloween"
+    # The TV's next party keeps the look.
+    fresh = api.tv_session(party.tv, new=True)
+    assert fresh["session_id"] != party.sid
+    assert api.state(party.tv, fresh["session_id"])["session"]["theme"] == "halloween"
+
 def test_host_reorder_keeps_fifo_for_new_items(party):
     api = party.api
     g = api.join(party.code, "G")

@@ -245,6 +245,35 @@ test('guests add songs from the songbook without searching', async ({ browser })
   await expect(tv.locator('.queue li').last()).toContainText('Mr. Brightside – The Killers');
 });
 
+test('the remote dresses the TV and phones in the Halloween theme', async ({ browser }) => {
+  const tvCtx = await context(browser, { viewport: { width: 1280, height: 720 } });
+  const tv = await tvCtx.newPage();
+  await tv.goto('/tv?player=fake');
+  await expect(tv.getByRole('heading', { name: 'Pair this TV' })).toBeVisible();
+  const pairingCode = await code(tv);
+  const login = await tv.request.post('/api/admin/login', { data: { password: ADMIN_PASSWORD } });
+  await tv.request.post('/api/admin/devices/pair', {
+    data: { code: pairingCode },
+    headers: { Authorization: `Bearer ${(await login.json()).token}` }
+  });
+  await expect(tv.getByRole('button', { name: 'Start the party' })).toBeVisible({ timeout: 15_000 });
+  const guest = await joinAs(browser, await code(tv), 'Vlad');
+
+  await tv.getByRole('button', { name: 'Menu' }).click();
+  await tv.getByRole('button', { name: 'Theme Classic' }).click();
+  await expect(tv.getByRole('button', { name: 'Theme Halloween' })).toBeVisible();
+  for (const page of [tv, guest]) await expect(page.locator('html')).toHaveAttribute('data-theme', 'halloween');
+  // The haunted night behind the lobby, the spiders in front of it, and the sky over the phone header.
+  await expect(tv.locator('canvas.dither')).toHaveCount(2);
+  await expect(guest.locator('.wash canvas.dither')).toHaveCount(1);
+  await settle(tv);
+  await tv.screenshot({ path: `${SHOTS}/tv-halloween.png` });
+
+  await tv.getByRole('button', { name: 'Theme Halloween' }).click();
+  for (const page of [tv, guest]) await expect(page.locator('html')).not.toHaveAttribute('data-theme');
+  await expect(tv.locator('canvas.dither')).toHaveCount(0);
+});
+
 test('TV resumes the current song after a reload', async ({ browser }) => {
   const tvCtx = await context(browser, { viewport: { width: 1280, height: 720 } });
   const tv = await tvCtx.newPage();

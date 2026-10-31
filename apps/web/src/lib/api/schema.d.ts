@@ -939,6 +939,11 @@ export interface components {
              * @enum {string}
              */
             status: "lobby" | "active" | "ended";
+            /**
+             * Theme
+             * @enum {string}
+             */
+            theme: "classic" | "halloween";
             /** Title */
             title: string;
         };
@@ -972,6 +977,11 @@ export interface components {
              * @enum {string}
              */
             status: "lobby" | "active" | "ended";
+            /**
+             * Theme
+             * @enum {string}
+             */
+            theme: "classic" | "halloween";
             /** Title */
             title: string;
         };
@@ -987,6 +997,8 @@ export interface components {
             queue_open?: boolean | null;
             /** Show Notifications */
             show_notifications?: boolean | null;
+            /** Theme */
+            theme?: ("classic" | "halloween") | null;
             /** Title */
             title?: string | null;
         };

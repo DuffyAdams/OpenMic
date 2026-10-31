@@ -1,0 +1,89 @@
+/*
+ * Halloween: pumpkin orange on a violet night, bone-white type and a dripping display face.
+ * The dithered scenery (moon, bats, spiders, fog) is drawn by lib/fx/halloween.ts.
+ */
+:root[data-theme='halloween'] {
+  --bg: #0b0710;
+  --bg-raised: #21162c;
+  --surface: #160f1e;
+  --surface-2: #261a32;
+  --surface-3: #3a2849;
+  --border: rgba(246, 236, 214, 0.08);
+  --border-strong: rgba(246, 236, 214, 0.3);
+
+  --accent: #ff7a1a;
+  --accent-strong: #ff9a47;
+  --accent-ink: #160800;
+  --accent-soft: rgba(255, 122, 26, 0.16);
+  --accent-glow: rgba(255, 122, 26, 0.45);
+  --accent-tint: rgba(255, 122, 26, 0.2);
+  --focus-glow: rgba(255, 122, 26, 0.55);
+  --wash: #3b1458;
+  --wash-2: #1d0b2e;
+  --wash-fade: rgba(29, 11, 46, 0.75);
+  --spotlight: #4a1a63;
+  --spotlight-2: #1d0b2e;
+  --spotlight-3: #3b1458;
+  --glass: rgba(11, 7, 16, 0.82);
+  --glass-thin: rgba(11, 7, 16, 0.74);
+
+  --text: #f6ecd6;
+  --text-2: #c9b9c9;
+  --text-3: #93809b;
+  --text-4: #5a4862;
+
+  --success: #a6e05a;
+  --success-soft: rgba(166, 224, 90, 0.14);
+  --warning: #ffb547;
+
+  --font-display: 'Creepster', var(--font-ui);
+  --display-tracking: 0.03em;
+  /* Creepster has one weight: never smear it into a fake bold. */
+  font-synthesis: style;
+}
+
+/*
+ * Display headings glow like a jack-o'-lantern; on the TV they flicker now and then. The glow is
+ * a filter, not a text-shadow, so headings that clip their overflow don't box it in.
+ */
+:root[data-theme='halloween'] :is(.display, .tv-display) {
+  font-weight: 400;
+  color: var(--accent);
+  text-shadow: 0 0.05em 0.12em rgba(0, 0, 0, 0.85);
+  filter: drop-shadow(0 0 0.25em rgba(255, 122, 26, 0.35));
+}
+:root[data-theme='halloween'] .tv-display {
+  animation: hw-flicker 11s linear infinite;
+}
+@keyframes hw-flicker {
+  0%,
+  90%,
+  92.5%,
+  95%,
+  100% {
+    opacity: 1;
+  }
+  91% {
+    opacity: 0.5;
+  }
+  93.5% {
+    opacity: 0.75;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme='halloween'] .tv-display {
+    animation: none;
+  }
+}
+
+/* TV: screens go see-through so the night behind them shows; a dark halo keeps text readable. */
+:root[data-theme='halloween'] .tv-screen {
+  background: transparent;
+  text-shadow: 0 0.1rem 0.5rem rgba(11, 7, 16, 0.9);
+}
+:root[data-theme='halloween'] .tv-glow {
+  display: none;
+}
+:root[data-theme='halloween'] .tv-btn {
+  text-shadow: none;
+}

@@ -132,6 +132,7 @@ class Party(Base):
     auto_skip_failed: Mapped[bool] = mapped_column(Boolean, default=True)
     max_pending_per_guest: Mapped[int] = mapped_column(Integer, default=0)  # 0 = unlimited
     show_notifications: Mapped[bool] = mapped_column(Boolean, default=True)
+    theme: Mapped[str] = mapped_column(String(16), default="classic")
 
     # Playback state (authoritative)
     current_item_id: Mapped[str | None] = mapped_column(String(36), nullable=True)

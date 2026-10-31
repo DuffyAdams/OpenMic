@@ -96,7 +96,7 @@
   .np {
     padding: 16px;
     border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, rgba(169, 112, 255, 0.22), var(--surface) 75%);
+    background: linear-gradient(180deg, var(--accent-tint), var(--surface) 75%);
   }
   .np.error {
     background: linear-gradient(180deg, rgba(243, 114, 127, 0.18), var(--surface) 75%);
@@ -218,7 +218,7 @@
     gap: 10px;
     padding: 8px 12px 8px 8px;
     border-radius: var(--radius-sm);
-    background: #3a2160;
+    background: var(--spotlight-3);
     overflow: hidden;
   }
   .mini-art {

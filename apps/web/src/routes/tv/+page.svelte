@@ -2,6 +2,10 @@
   import '$styles/tv.css';
   import { page } from '$app/state';
   import { onDestroy, onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
+  import { dither } from '$lib/fx/dither';
+  import { creepyCrawlies, HALLOWEEN_PALETTE, hauntedNight, TV_NIGHT } from '$lib/fx/halloween';
+  import { wearTheme } from '$lib/themes';
   import TvBand from '$lib/tv/components/TvBand.svelte';
   import TvBoot from '$lib/tv/components/TvBoot.svelte';
   import TvEnded from '$lib/tv/components/TvEnded.svelte';
@@ -61,6 +65,13 @@
     }
   }
 
+  const theme = $derived(tv.room.state?.session.theme ?? 'classic');
+  $effect(() => wearTheme(theme));
+  // Dithered pixels across the screen: about 2 device pixels per dot on a 1080p TV.
+  const FX_COLUMNS = 960;
+  const night = hauntedNight(TV_NIGHT);
+  const crawlies = creepyCrawlies();
+
   const stage = $derived(tv.screen === 'stage');
   const sideOpen = $derived(!!tv.menu || !!tv.confirm || tv.joinPanel);
   const bandOpen = $derived(
@@ -86,6 +97,20 @@
   >
     <div class="player-host" bind:this={playerHost}></div>
   </div>
+
+  <!-- Halloween: a dithered night behind the screens and creepy-crawlies in front, never over the video. -->
+  {#if theme === 'halloween' && !stage}
+    <div class="fx" transition:fade={{ duration: 900 }}>
+      <canvas class="dither" aria-hidden="true" use:dither={{ scene: night, palette: HALLOWEEN_PALETTE, columns: FX_COLUMNS, fps: 20 }}></canvas>
+    </div>
+    <div class="fx front" transition:fade={{ duration: 900 }}>
+      <canvas
+        class="dither"
+        aria-hidden="true"
+        use:dither={{ scene: crawlies, palette: HALLOWEEN_PALETTE, columns: FX_COLUMNS, fps: 20, transparent: true }}
+      ></canvas>
+    </div>
+  {/if}
 
   {#if tv.screen === 'boot'}
     <TvBoot />
@@ -127,6 +152,16 @@
   .player-host {
     position: absolute;
     inset: 0;
+  }
+  /* Theme effects: behind the screens (z 10), and in front of them but under the band and menu. */
+  .fx {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+  }
+  .fx.front {
+    z-index: 20;
   }
   .player-host :global(iframe) {
     position: absolute;

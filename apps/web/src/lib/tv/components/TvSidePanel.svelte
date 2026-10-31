@@ -2,6 +2,7 @@
   import Icon, { type IconName } from '$lib/components/Icon.svelte';
   import Qr from '$lib/components/Qr.svelte';
   import { singers } from '$lib/format';
+  import { nextTheme, themeInfo } from '$lib/themes';
   import { useTv } from '../context';
   import { focusScope } from '../focus';
   import { native } from '../native';
@@ -36,6 +37,12 @@
       label: 'Song requests',
       value: s.session.queue_open ? 'Open' : 'Paused',
       run: () => tv.command(s.session.queue_open ? 'lock_queue' : 'unlock_queue')
+    });
+    list.push({
+      icon: 'moon',
+      label: 'Theme',
+      value: themeInfo(s.session.theme).name,
+      run: () => tv.settings({ theme: nextTheme(s.session.theme) })
     });
     list.push({
       icon: 'sparkle',

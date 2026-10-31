@@ -156,7 +156,7 @@
     padding: 18px;
   }
   .spot.gold {
-    background: linear-gradient(135deg, #5b2fa8, #2c1850 70%);
+    background: linear-gradient(135deg, var(--spotlight), var(--spotlight-2) 70%);
   }
   .icon-btn.on {
     color: var(--accent);
@@ -176,7 +176,7 @@
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 1.6rem;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--display-tracking, -0.03em);
     line-height: 1.15;
   }
   .spot p:last-child {

@@ -28,6 +28,7 @@ export type SettingsUpdate = S['SettingsUpdate'];
 export type DuetPartner = S['DuetPartner'];
 export type Command = S['CommandRequest']['command'];
 export type Role = S['MeOut']['role'];
+export type Theme = S['SessionOut']['theme'];
 
 // --- WebSocket messages (not part of the REST schema) ---------------------------------------
 

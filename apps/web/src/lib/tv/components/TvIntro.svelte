@@ -110,7 +110,7 @@
             {#each faces as p (p.id)}<Avatar id={p.id} name={p.display_name} avatar={p.avatar} size="6.5rem" />{/each}
           </span>
         {/if}
-        <h1 class="singer" style:font-size={nameSize}>{names}</h1>
+        <h1 class="tv-display singer" style:font-size={nameSize}>{names}</h1>
       </div>
 
       <div class="track">
@@ -216,6 +216,13 @@
     inset: 0;
     background:
       linear-gradient(180deg, rgba(61, 31, 110, 0.82) 0%, rgba(36, 18, 74, 0.86) 40%, rgba(18, 18, 18, 0.97) 85%);
+  }
+  /* Halloween: the haunted night behind the screen replaces the blurred artwork. */
+  :global(:root[data-theme='halloween']) .bg {
+    display: none;
+  }
+  :global(:root[data-theme='halloween']) .shade {
+    background: linear-gradient(90deg, var(--glass-thin), transparent 60%);
   }
   @keyframes rise {
     from {
@@ -336,8 +343,6 @@
   .singer {
     min-width: 0;
     margin: 0;
-    font-weight: 900;
-    letter-spacing: -0.045em;
     line-height: 1.05;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -470,7 +475,7 @@
     min-height: 0;
     padding: 2rem;
     border-radius: 0.75rem;
-    background: rgba(18, 18, 18, 0.78);
+    background: var(--glass-thin);
     overflow: hidden;
   }
   .panel-head {
@@ -595,7 +600,7 @@
     gap: 1.75rem;
     padding: 1.5rem;
     border-radius: 0.75rem;
-    background: rgba(18, 18, 18, 0.78);
+    background: var(--glass-thin);
   }
   .qr {
     flex: none;

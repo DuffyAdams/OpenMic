@@ -7,6 +7,9 @@
   import AvatarPicker from '$lib/components/AvatarPicker.svelte';
   import Brand from '$lib/components/Brand.svelte';
   import Icon from '$lib/components/Icon.svelte';
+  import { dither } from '$lib/fx/dither';
+  import { HALLOWEEN_PALETTE, hauntedNight, PHONE_NIGHT } from '$lib/fx/halloween';
+  import { wearTheme } from '$lib/themes';
   import { credentials, prefs } from '$lib/storage';
   import type { JoinResponse, SessionLookup } from '$lib/types';
 
@@ -18,6 +21,8 @@
   let avatar = $state(avatarInfo(prefs.avatar)?.id ?? randomAvatar());
   let busy = $state(false);
   let error = $state('');
+  $effect(() => wearTheme(lookup?.theme ?? 'classic'));
+  const night = hauntedNight(PHONE_NIGHT);
 
   $effect(() => {
     const c = code;
@@ -66,6 +71,11 @@
 <svelte:head><title>Join {lookup?.title ?? 'the party'} · OpenMic</title></svelte:head>
 
 <div class="lounge-bg"></div>
+{#if lookup?.theme === 'halloween'}
+  <div class="haunt" aria-hidden="true">
+    <canvas class="dither" use:dither={{ scene: night, palette: HALLOWEEN_PALETTE, pixel: 1.5, fps: 15 }}></canvas>
+  </div>
+{/if}
 <main class="page">
   <header><a href="{base}/" aria-label="Home"><Brand /></a></header>
 
@@ -111,6 +121,13 @@
 </main>
 
 <style>
+  .haunt {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 360px;
+    z-index: -1;
+    pointer-events: none;
+  }
   header {
     margin-bottom: 8vh;
   }

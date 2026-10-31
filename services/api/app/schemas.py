@@ -9,6 +9,8 @@ ItemStatusT = Literal[
     "pending", "preparing", "playing", "completed", "cancelled", "failed", "skipped"
 ]
 RoleT = Literal["guest", "host"]
+# Looks the TV and phones can wear; the styles live in the web app.
+ThemeT = Literal["classic", "halloween"]
 
 
 def clean_display_name(value: str) -> str:
@@ -73,6 +75,7 @@ class SessionOut(BaseModel):
     auto_skip_failed: bool
     max_pending_per_guest: int
     show_notifications: bool
+    theme: ThemeT
     created_at: datetime
     started_at: datetime | None
     ended_at: datetime | None
@@ -146,6 +149,7 @@ class SessionLookup(BaseModel):
     status: PartyStatusT
     queue_open: bool
     guest_count: int
+    theme: ThemeT
 
 
 class JoinRequest(BaseModel):
@@ -283,6 +287,7 @@ class SettingsUpdate(BaseModel):
     auto_skip_failed: bool | None = None
     max_pending_per_guest: int | None = Field(default=None, ge=0, le=20)
     show_notifications: bool | None = None
+    theme: ThemeT | None = None
 
     @field_validator("title")
     @classmethod

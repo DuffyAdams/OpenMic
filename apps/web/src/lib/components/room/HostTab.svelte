@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useParty } from '$lib/party.svelte';
+  import { THEMES, themeInfo } from '$lib/themes';
   import { toasts } from '$lib/toast.svelte';
   import type { Participant } from '$lib/types';
   import Avatar from '../Avatar.svelte';
@@ -129,6 +130,23 @@
           <Icon name="right" size={18} />
         </button>
       {/if}
+      <div class="theme-row">
+        <span class="text">
+          <span class="label">Theme</span>
+          <span class="hint">{themeInfo(s.session.theme).hint}</span>
+        </span>
+        <span class="seg" role="radiogroup" aria-label="Theme">
+          {#each THEMES as t (t.id)}
+            <button
+              role="radio"
+              aria-checked={s.session.theme === t.id}
+              onclick={() => s.session.theme !== t.id && party.settings({ theme: t.id })}
+            >
+              {t.name}
+            </button>
+          {/each}
+        </span>
+      </div>
       <Stepper
         label="Up-next card"
         hint="Seconds the TV shows what's coming up"
@@ -227,7 +245,7 @@
   }
   .start {
     padding: 20px;
-    background: linear-gradient(135deg, #5b2fa8, #2c1850 70%) border-box;
+    background: linear-gradient(135deg, var(--spotlight), var(--spotlight-2) 70%) border-box;
   }
   .start h2 {
     margin: 6px 0 6px;
@@ -332,6 +350,48 @@
   }
   .link-row :global(svg:first-child) {
     color: var(--accent);
+  }
+  .theme-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px 10px 16px;
+  }
+  .theme-row .text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .theme-row .label {
+    font-weight: 700;
+  }
+  .theme-row .hint {
+    font-size: 0.84rem;
+    color: var(--text-3);
+  }
+  .seg {
+    flex: none;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    border-radius: var(--radius-pill);
+    background: var(--surface-2);
+  }
+  .seg button {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-2);
+    transition:
+      background var(--dur-fast) var(--ease),
+      color var(--dur-fast) var(--ease);
+  }
+  .seg button[aria-checked='true'] {
+    background: var(--accent);
+    color: var(--accent-ink);
   }
   .title-edit {
     display: flex;

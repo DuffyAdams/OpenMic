@@ -1,5 +1,8 @@
 <script lang="ts">
   import { singsOn } from '$lib/format';
+  import { dither } from '$lib/fx/dither';
+  import { HALLOWEEN_PALETTE, hauntedNight, PHONE_NIGHT } from '$lib/fx/halloween';
+  import { wearTheme } from '$lib/themes';
   import { PartyClient, setParty, type Tab } from '$lib/party.svelte';
   import Avatar from '../Avatar.svelte';
   import Icon, { type IconName } from '../Icon.svelte';
@@ -18,6 +21,8 @@
   setParty(party);
 
   const s = $derived(party.state!);
+  $effect(() => wearTheme(s.session.theme));
+  const night = hauntedNight(PHONE_NIGHT);
 
   const tabs = $derived.by(() => {
     const mine = s.queue.filter((i) => singsOn(i, party.creds.participantId)).length;
@@ -46,7 +51,11 @@
 <svelte:window onscroll={() => (scrolled = window.scrollY > 8)} />
 
 <div class="room">
-  <div class="wash" aria-hidden="true"></div>
+  <div class="wash" aria-hidden="true">
+    {#if s.session.theme === 'halloween'}
+      <canvas class="dither" use:dither={{ scene: night, palette: HALLOWEEN_PALETTE, pixel: 1.5, fps: 15 }}></canvas>
+    {/if}
+  </div>
   <header class="top" class:scrolled>
     <div class="title">
       <h1>{s.session.title}</h1>
@@ -150,7 +159,7 @@
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 1.5rem;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--display-tracking, -0.03em);
     line-height: 1.15;
     white-space: nowrap;
     overflow: hidden;

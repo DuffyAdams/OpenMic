@@ -46,7 +46,7 @@ html.tv body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, var(--wash) 0%, rgba(36, 18, 74, 0.75) 30%, transparent 70%);
+  background: linear-gradient(180deg, var(--wash) 0%, var(--wash-fade) 30%, transparent 70%);
 }
 
 /* Focusable controls (D-pad) */
@@ -93,7 +93,7 @@ html.tv body {
   border-color: var(--text);
   box-shadow:
     0 0 0 0.3rem #fff,
-    0 1rem 3rem -0.5rem rgba(169, 112, 255, 0.55);
+    0 1rem 3rem -0.5rem var(--focus-glow);
 }
 .tv-btn.primary:focus,
 .tv-btn.gold:focus {
@@ -110,7 +110,7 @@ html.tv body {
 .tv-display {
   font-family: var(--font-display);
   font-weight: 900;
-  letter-spacing: -0.045em;
+  letter-spacing: var(--display-tracking, -0.045em);
   line-height: 1.02;
 }
 .tv-mono {
@@ -124,9 +124,9 @@ html.tv body {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(60% 80% at 30% 30%, #3d1f6e, transparent 70%),
-    radial-gradient(60% 80% at 80% 80%, #24124a, transparent 70%),
-    #121212;
+    radial-gradient(60% 80% at 30% 30%, var(--wash), transparent 70%),
+    radial-gradient(60% 80% at 80% 80%, var(--wash-2), transparent 70%),
+    var(--bg);
 }
 .fp-inner {
   text-align: center;

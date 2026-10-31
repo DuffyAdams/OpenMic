@@ -81,7 +81,7 @@
     transition: background var(--dur-slow) var(--ease);
   }
   .band.gold {
-    background: linear-gradient(90deg, #3d1f6e, #000 70%);
+    background: linear-gradient(90deg, var(--wash), #000 70%);
     border-top-color: var(--accent);
   }
   .band.error {

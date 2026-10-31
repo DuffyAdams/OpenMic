@@ -20,6 +20,8 @@ show from their phone or the Fire TV remote.
 - **Bring a duet partner.** Sing with another guest or add a friend who doesn't have a phone.
 - **Keep the party moving.** A shared live queue, singer announcements, and automatic playback.
 - **Host from anywhere in the room.** Run the show from your phone or the Fire TV remote.
+- **Dress up the room.** Pick a party theme: Classic, or Halloween with a dithered haunted night
+  on the TV (bats, spiders, jack-o'-lanterns, lightning).
 - **Make it yours.** Run on your home network or your own server with HTTPS.
 
 ## A look around
@@ -120,7 +122,7 @@ Open **OpenMic** on the Fire TV, pair it once from `/admin` on your phone, and y
 - **Host** gets controls one of two ways: sign in at `/admin` → **Host controls**, or open the
   TV **Menu → Host from your phone** and scan that QR code (proves you're holding the remote).
   The **Host** tab has start/pause/skip/restart, reordering, request locking, guest removal,
-  party settings, and **End party**.
+  party settings (including the **Theme**), and **End party**.
 - **Fire TV remote**: OK shows playback controls during a song · Menu opens the full menu ·
   Play/Pause pauses · Fast-forward asks to skip · Rewind restarts the song · Back closes menus
   and never quits mid-song.

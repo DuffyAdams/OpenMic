@@ -245,7 +245,7 @@
     min-height: 0;
     padding: 2rem;
     border-radius: 0.75rem;
-    background: rgba(18, 18, 18, 0.85);
+    background: var(--glass);
     overflow: hidden;
   }
   .queue {

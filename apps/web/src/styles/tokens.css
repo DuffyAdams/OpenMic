@@ -18,9 +18,19 @@
   --accent-ink: #000;
   --accent-soft: rgba(169, 112, 255, 0.16);
   --accent-glow: rgba(169, 112, 255, 0.4);
+  --accent-tint: rgba(169, 112, 255, 0.22);
+  --focus-glow: rgba(169, 112, 255, 0.55);
   /* Header washes: a deep purple that fades into --bg. */
   --wash: #3d1f6e;
   --wash-2: #24124a;
+  --wash-fade: rgba(36, 18, 74, 0.75);
+  /* Spotlight surfaces: "start the party", your-turn cards, gold toasts, the mini player. */
+  --spotlight: #5b2fa8;
+  --spotlight-2: #2c1850;
+  --spotlight-3: #3a2160;
+  /* Translucent TV panels laid over artwork. */
+  --glass: rgba(18, 18, 18, 0.85);
+  --glass-thin: rgba(18, 18, 18, 0.78);
 
   /* "Premium" moments (your turn, start the party) share the single accent. */
   --premium: var(--accent);
@@ -47,6 +57,7 @@
   --radius-pill: 999px;
 
   --font-ui: 'Figtree Variable', 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Display headings use their own tight tracking unless a theme sets --display-tracking. */
   --font-display: var(--font-ui);
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 

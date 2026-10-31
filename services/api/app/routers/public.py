@@ -58,6 +58,7 @@ async def lookup_session(
         status=party.status,
         queue_open=party.queue_open,
         guest_count=await services.rooms.guest_count(party.id),
+        theme=party.theme,
     )
 
 

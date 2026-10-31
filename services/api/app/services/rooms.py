@@ -267,6 +267,7 @@ class RoomService:
                 auto_skip_failed=party.auto_skip_failed,
                 max_pending_per_guest=party.max_pending_per_guest,
                 show_notifications=party.show_notifications,
+                theme=party.theme,
                 created_at=party.created_at,
                 started_at=party.started_at,
                 ended_at=party.ended_at,
@@ -366,10 +367,18 @@ class RoomService:
                 await self.end_party(existing.id, Actor("device", device=device))
             async with self.sessionmaker() as db:
                 async with db.begin():
+                    # The TV keeps its look from one party to the next.
+                    theme = await db.scalar(
+                        select(Party.theme)
+                        .where(Party.device_id == device.id)
+                        .order_by(Party.created_at.desc())
+                        .limit(1)
+                    )
                     party = Party(
                         join_code=await self._unique_join_code(db),
                         title=self.settings.default_party_title,
                         device_id=device.id,
+                        theme=theme or "classic",
                     )
                     db.add(party)
                     await db.flush()

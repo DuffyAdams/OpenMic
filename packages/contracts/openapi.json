@@ -1078,6 +1078,14 @@
             "title": "Status",
             "type": "string"
           },
+          "theme": {
+            "enum": [
+              "classic",
+              "halloween"
+            ],
+            "title": "Theme",
+            "type": "string"
+          },
           "title": {
             "title": "Title",
             "type": "string"
@@ -1089,7 +1097,8 @@
           "title",
           "status",
           "queue_open",
-          "guest_count"
+          "guest_count",
+          "theme"
         ],
         "title": "SessionLookup",
         "type": "object"
@@ -1162,6 +1171,14 @@
             "title": "Status",
             "type": "string"
           },
+          "theme": {
+            "enum": [
+              "classic",
+              "halloween"
+            ],
+            "title": "Theme",
+            "type": "string"
+          },
           "title": {
             "title": "Title",
             "type": "string"
@@ -1177,6 +1194,7 @@
           "auto_skip_failed",
           "max_pending_per_guest",
           "show_notifications",
+          "theme",
           "created_at",
           "started_at",
           "ended_at"
@@ -1245,6 +1263,21 @@
               }
             ],
             "title": "Show Notifications"
+          },
+          "theme": {
+            "anyOf": [
+              {
+                "enum": [
+                  "classic",
+                  "halloween"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theme"
           },
           "title": {
             "anyOf": [

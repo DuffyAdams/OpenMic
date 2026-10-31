@@ -74,6 +74,13 @@ flow. This makes the system usable on day one.
 - **Idle parties auto-end** after 12 hours; the TV opens a fresh lobby 60 s after a party ends.
 - **Diagnostics panel** in the TV menu (connection, player state, event log) for Phase 0 testing.
 - **Nightly database backups** with retention, plus backup/restore scripts.
+- **Party themes**: the host picks a look (phone Host tab or TV Menu → Theme) and the TV keeps
+  it for its next party. **Halloween** recolours the TV, room and join pages and adds an animated
+  scene drawn on canvas and blue-noise dithered on the GPU (`apps/web/src/lib/fx`): a harvest moon behind a
+  haunted house, bats, a ghost, jack-o'-lanterns, fog and lightning behind the TV screens, with
+  spiders and a swooping bat in front. Nothing is ever drawn over the video, and viewers who
+  prefer reduced motion get a still frame. New themes are a token block in
+  `apps/web/src/styles/themes/` plus an entry in `lib/themes.ts` and the server's `ThemeT`.
 - **Songbook**: about 400 curated songs in categories, each with pre-checked karaoke videos
   and backups, so most picks cost no search quota ([songbook.md](songbook.md)).
 

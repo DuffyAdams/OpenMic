@@ -82,7 +82,7 @@
     color: var(--danger);
   }
   .gold {
-    background: #5b2fa8;
+    background: var(--spotlight);
   }
   .gold .ico {
     background: var(--accent);

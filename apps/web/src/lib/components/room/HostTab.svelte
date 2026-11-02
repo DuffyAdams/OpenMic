@@ -351,14 +351,17 @@
   .link-row :global(svg:first-child) {
     color: var(--accent);
   }
+  /* With three themes the picker drops under its label on narrow phones. */
   .theme-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
+    gap: 8px 12px;
     padding: 10px 10px 10px 16px;
   }
   .theme-row .text {
     flex: 1;
+    min-width: 9rem;
     display: flex;
     flex-direction: column;
     gap: 2px;

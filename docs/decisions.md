@@ -79,8 +79,12 @@ flow. This makes the system usable on day one.
   scene drawn on canvas and blue-noise dithered on the GPU (`apps/web/src/lib/fx`): a harvest moon behind a
   haunted house, bats, a ghost, jack-o'-lanterns, fog and lightning behind the TV screens, with
   spiders and a swooping bat in front. Nothing is ever drawn over the video, and viewers who
-  prefer reduced motion get a still frame. New themes are a token block in
-  `apps/web/src/styles/themes/` plus an entry in `lib/themes.ts` and the server's `ThemeT`.
+  prefer reduced motion get a still frame. **Christmas** does the same with a snowy night: a moon
+  over a village with lit windows and chimney smoke, northern lights, a decorated tree, a waving
+  snowman, falling snow, fairy lights along the top and Santa's sleigh crossing the moon; in front,
+  baubles swing on ribbons and now and then Santa swoops past. New themes are a token block in
+  `apps/web/src/styles/themes/`, an entry in `lib/themes.ts` and the server's `ThemeT`, and
+  (optionally) scenes registered in `lib/fx/scenery.ts`.
 - **Songbook**: about 400 curated songs in categories, each with pre-checked karaoke videos
   and backups, so most picks cost no search quota ([songbook.md](songbook.md)).
 

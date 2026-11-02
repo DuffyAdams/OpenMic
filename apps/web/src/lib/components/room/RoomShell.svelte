@@ -1,7 +1,7 @@
 <script lang="ts">
   import { singsOn } from '$lib/format';
   import { dither } from '$lib/fx/dither';
-  import { HALLOWEEN_PALETTE, hauntedNight, PHONE_NIGHT } from '$lib/fx/halloween';
+  import { scenery } from '$lib/fx/scenery';
   import { wearTheme } from '$lib/themes';
   import { PartyClient, setParty, type Tab } from '$lib/party.svelte';
   import Avatar from '../Avatar.svelte';
@@ -22,7 +22,8 @@
 
   const s = $derived(party.state!);
   $effect(() => wearTheme(s.session.theme));
-  const night = hauntedNight(PHONE_NIGHT);
+  const fx = $derived(scenery(s.session.theme));
+  const sky = $derived(fx?.phone());
 
   const tabs = $derived.by(() => {
     const mine = s.queue.filter((i) => singsOn(i, party.creds.participantId)).length;
@@ -52,8 +53,10 @@
 
 <div class="room">
   <div class="wash" aria-hidden="true">
-    {#if s.session.theme === 'halloween'}
-      <canvas class="dither" use:dither={{ scene: night, palette: HALLOWEEN_PALETTE, pixel: 1.5, fps: 15 }}></canvas>
+    {#if fx && sky}
+      {#key sky}
+        <canvas class="dither" use:dither={{ scene: sky, palette: fx.palette, pixel: 1.5, fps: 15 }}></canvas>
+      {/key}
     {/if}
   </div>
   <header class="top" class:scrolled>

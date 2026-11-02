@@ -20,8 +20,9 @@ show from their phone or the Fire TV remote.
 - **Bring a duet partner.** Sing with another guest or add a friend who doesn't have a phone.
 - **Keep the party moving.** A shared live queue, singer announcements, and automatic playback.
 - **Host from anywhere in the room.** Run the show from your phone or the Fire TV remote.
-- **Dress up the room.** Pick a party theme: Classic, or Halloween with a dithered haunted night
-  on the TV (bats, spiders, jack-o'-lanterns, lightning).
+- **Dress up the room.** Pick a party theme: Classic; Halloween with a dithered haunted night
+  on the TV (bats, spiders, jack-o'-lanterns, lightning); or Christmas with a snowy village under
+  fairy lights (a decorated tree, a snowman, falling snow and Santa's sleigh).
 - **Make it yours.** Run on your home network or your own server with HTTPS.
 
 ## A look around

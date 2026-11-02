@@ -10,7 +10,7 @@ ItemStatusT = Literal[
 ]
 RoleT = Literal["guest", "host"]
 # Looks the TV and phones can wear; the styles live in the web app.
-ThemeT = Literal["classic", "halloween"]
+ThemeT = Literal["classic", "halloween", "christmas"]
 
 
 def clean_display_name(value: str) -> str:

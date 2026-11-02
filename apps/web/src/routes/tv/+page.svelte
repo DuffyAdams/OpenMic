@@ -4,7 +4,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import { dither } from '$lib/fx/dither';
-  import { creepyCrawlies, HALLOWEEN_PALETTE, hauntedNight, TV_NIGHT } from '$lib/fx/halloween';
+  import { scenery } from '$lib/fx/scenery';
   import { wearTheme } from '$lib/themes';
   import TvBand from '$lib/tv/components/TvBand.svelte';
   import TvBoot from '$lib/tv/components/TvBoot.svelte';
@@ -69,8 +69,8 @@
   $effect(() => wearTheme(theme));
   // Dithered pixels across the screen: about 2 device pixels per dot on a 1080p TV.
   const FX_COLUMNS = 960;
-  const night = hauntedNight(TV_NIGHT);
-  const crawlies = creepyCrawlies();
+  const fx = $derived(scenery(theme));
+  const scenes = $derived(fx && { back: fx.tv(), front: fx.tvFront() });
 
   const stage = $derived(tv.screen === 'stage');
   const sideOpen = $derived(!!tv.menu || !!tv.confirm || tv.joinPanel);
@@ -98,18 +98,21 @@
     <div class="player-host" bind:this={playerHost}></div>
   </div>
 
-  <!-- Halloween: a dithered night behind the screens and creepy-crawlies in front, never over the video. -->
-  {#if theme === 'halloween' && !stage}
-    <div class="fx" transition:fade={{ duration: 900 }}>
-      <canvas class="dither" aria-hidden="true" use:dither={{ scene: night, palette: HALLOWEEN_PALETTE, columns: FX_COLUMNS, fps: 20 }}></canvas>
-    </div>
-    <div class="fx front" transition:fade={{ duration: 900 }}>
-      <canvas
-        class="dither"
-        aria-hidden="true"
-        use:dither={{ scene: crawlies, palette: HALLOWEEN_PALETTE, columns: FX_COLUMNS, fps: 20, transparent: true }}
-      ></canvas>
-    </div>
+  <!-- Theme scenery: a dithered night behind the screens and a few touches in front, never over the video.
+       Switching themes crossfades from one to the next. -->
+  {#if fx && scenes && !stage}
+    {#key scenes}
+      <div class="fx" transition:fade|global={{ duration: 900 }}>
+        <canvas class="dither" aria-hidden="true" use:dither={{ scene: scenes.back, palette: fx.palette, columns: FX_COLUMNS, fps: 20 }}></canvas>
+      </div>
+      <div class="fx front" transition:fade|global={{ duration: 900 }}>
+        <canvas
+          class="dither"
+          aria-hidden="true"
+          use:dither={{ scene: scenes.front, palette: fx.palette, columns: FX_COLUMNS, fps: 20, transparent: true }}
+        ></canvas>
+      </div>
+    {/key}
   {/if}
 
   {#if tv.screen === 'boot'}

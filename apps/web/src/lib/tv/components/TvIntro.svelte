@@ -217,11 +217,11 @@
     background:
       linear-gradient(180deg, rgba(61, 31, 110, 0.82) 0%, rgba(36, 18, 74, 0.86) 40%, rgba(18, 18, 18, 0.97) 85%);
   }
-  /* Halloween: the haunted night behind the screen replaces the blurred artwork. */
-  :global(:root[data-theme='halloween']) .bg {
+  /* Themes with scenery: the night behind the screen replaces the blurred artwork. */
+  :global(:root:is([data-theme='halloween'], [data-theme='christmas'])) .bg {
     display: none;
   }
-  :global(:root[data-theme='halloween']) .shade {
+  :global(:root:is([data-theme='halloween'], [data-theme='christmas'])) .shade {
     background: linear-gradient(90deg, var(--glass-thin), transparent 60%);
   }
   @keyframes rise {

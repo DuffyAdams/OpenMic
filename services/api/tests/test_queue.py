@@ -131,6 +131,17 @@ def test_theme_setting(party):
     assert fresh["session_id"] != party.sid
     assert api.state(party.tv, fresh["session_id"])["session"]["theme"] == "halloween"
 
+
+def test_christmas_theme(party):
+    api = party.api
+    url = f"/api/sessions/{party.sid}/settings"
+    r = api.c.patch(url, json={"theme": "christmas"}, headers=auth(party.tv))
+    assert r.status_code == 200 and r.json()["session"]["theme"] == "christmas"
+    assert api.c.get(f"/api/sessions/lookup/{party.code}").json()["theme"] == "christmas"
+    fresh = api.tv_session(party.tv, new=True)
+    assert api.state(party.tv, fresh["session_id"])["session"]["theme"] == "christmas"
+
+
 def test_host_reorder_keeps_fifo_for_new_items(party):
     api = party.api
     g = api.join(party.code, "G")

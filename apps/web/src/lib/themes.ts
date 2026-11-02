@@ -15,7 +15,8 @@ export interface ThemeInfo {
 
 export const THEMES: ThemeInfo[] = [
   { id: 'classic', name: 'Classic', hint: 'Purple stage lights', chrome: '#121212' },
-  { id: 'halloween', name: 'Halloween', hint: 'Bats, spiders and a haunted moon', chrome: '#0b0710' }
+  { id: 'halloween', name: 'Halloween', hint: 'Bats, spiders and a haunted moon', chrome: '#0b0710' },
+  { id: 'christmas', name: 'Christmas', hint: "Snow, fairy lights and Santa's sleigh", chrome: '#07101c' }
 ];
 
 export function themeInfo(id: string | null | undefined): ThemeInfo {

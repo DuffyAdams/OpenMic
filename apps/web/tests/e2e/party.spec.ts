@@ -245,7 +245,7 @@ test('guests add songs from the songbook without searching', async ({ browser })
   await expect(tv.locator('.queue li').last()).toContainText('Mr. Brightside – The Killers');
 });
 
-test('the remote dresses the TV and phones in the Halloween theme', async ({ browser }) => {
+test('the remote dresses the TV and phones in the Halloween and Christmas themes', async ({ browser }) => {
   const tvCtx = await context(browser, { viewport: { width: 1280, height: 720 } });
   const tv = await tvCtx.newPage();
   await tv.goto('/tv?player=fake');
@@ -269,7 +269,17 @@ test('the remote dresses the TV and phones in the Halloween theme', async ({ bro
   await settle(tv);
   await tv.screenshot({ path: `${SHOTS}/tv-halloween.png` });
 
+  // The same button moves on to Christmas: a snowy village behind, baubles and Santa in front.
   await tv.getByRole('button', { name: 'Theme Halloween' }).click();
+  await expect(tv.getByRole('button', { name: 'Theme Christmas' })).toBeVisible();
+  for (const page of [tv, guest]) await expect(page.locator('html')).toHaveAttribute('data-theme', 'christmas');
+  await expect(tv.locator('canvas.dither')).toHaveCount(2);
+  await expect(guest.locator('.wash canvas.dither')).toHaveCount(1);
+  await settle(tv);
+  await tv.screenshot({ path: `${SHOTS}/tv-christmas.png` });
+  await guest.screenshot({ path: `${SHOTS}/phone-christmas.png` });
+
+  await tv.getByRole('button', { name: 'Theme Christmas' }).click();
   for (const page of [tv, guest]) await expect(page.locator('html')).not.toHaveAttribute('data-theme');
   await expect(tv.locator('canvas.dither')).toHaveCount(0);
 });

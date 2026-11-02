@@ -1,0 +1,68 @@
+/*
+ * Christmas: holly-berry red on a snowy midnight, snow-white type, gold that glows like fairy
+ * lights and a hand-lettered display face. The dithered scenery (moon, sleigh, village, tree,
+ * snow, lights) is drawn by lib/fx/christmas.ts.
+ */
+:root[data-theme='christmas'] {
+  --bg: #07101c;
+  --bg-raised: #172539;
+  --surface: #0e1a29;
+  --surface-2: #18283c;
+  --surface-3: #263b55;
+  --border: rgba(238, 245, 255, 0.08);
+  --border-strong: rgba(238, 245, 255, 0.3);
+
+  --accent: #ff4b5c;
+  --accent-strong: #ff7380;
+  --accent-ink: #1c0307;
+  --accent-soft: rgba(255, 75, 92, 0.16);
+  --accent-glow: rgba(255, 75, 92, 0.45);
+  --accent-tint: rgba(255, 75, 92, 0.2);
+  --focus-glow: rgba(255, 75, 92, 0.55);
+  /* Pine-green header washes; red-velvet spotlight cards. */
+  --wash: #0f3b33;
+  --wash-2: #0a2224;
+  --wash-fade: rgba(10, 34, 36, 0.75);
+  --spotlight: #8c1c2c;
+  --spotlight-2: #3a0b15;
+  --spotlight-3: #5c1421;
+  --glass: rgba(7, 16, 28, 0.82);
+  --glass-thin: rgba(7, 16, 28, 0.74);
+
+  --text: #f2f7ff;
+  --text-2: #c3cfde;
+  --text-3: #8798ae;
+  --text-4: #4f6077;
+
+  --success: #5fd47e;
+  --success-soft: rgba(95, 212, 126, 0.14);
+  --warning: #ffc94d;
+
+  --font-display: 'Mountains of Christmas', var(--font-ui);
+  --display-tracking: 0.01em;
+  /* The face ships in one bold weight: never smear it into a fake heavier one. */
+  font-synthesis: style;
+}
+
+/*
+ * Display headings are gold and glow softly, like a string of warm lights. The glow is a filter,
+ * not a text-shadow, so headings that clip their overflow don't box it in.
+ */
+:root[data-theme='christmas'] :is(.display, .tv-display) {
+  font-weight: 700;
+  color: #ffd56b;
+  text-shadow: 0 0.05em 0.12em rgba(0, 0, 0, 0.85);
+  filter: drop-shadow(0 0 0.25em rgba(255, 213, 107, 0.3));
+}
+
+/* TV: screens go see-through so the snowy night behind them shows; a dark halo keeps text readable. */
+:root[data-theme='christmas'] .tv-screen {
+  background: transparent;
+  text-shadow: 0 0.1rem 0.5rem rgba(7, 16, 28, 0.9);
+}
+:root[data-theme='christmas'] .tv-glow {
+  display: none;
+}
+:root[data-theme='christmas'] .tv-btn {
+  text-shadow: none;
+}

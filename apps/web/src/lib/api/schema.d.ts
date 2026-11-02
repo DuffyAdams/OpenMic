@@ -943,7 +943,7 @@ export interface components {
              * Theme
              * @enum {string}
              */
-            theme: "classic" | "halloween";
+            theme: "classic" | "halloween" | "christmas";
             /** Title */
             title: string;
         };
@@ -981,7 +981,7 @@ export interface components {
              * Theme
              * @enum {string}
              */
-            theme: "classic" | "halloween";
+            theme: "classic" | "halloween" | "christmas";
             /** Title */
             title: string;
         };
@@ -998,7 +998,7 @@ export interface components {
             /** Show Notifications */
             show_notifications?: boolean | null;
             /** Theme */
-            theme?: ("classic" | "halloween") | null;
+            theme?: ("classic" | "halloween" | "christmas") | null;
             /** Title */
             title?: string | null;
         };

@@ -8,7 +8,7 @@
   import Brand from '$lib/components/Brand.svelte';
   import Icon from '$lib/components/Icon.svelte';
   import { dither } from '$lib/fx/dither';
-  import { HALLOWEEN_PALETTE, hauntedNight, PHONE_NIGHT } from '$lib/fx/halloween';
+  import { scenery } from '$lib/fx/scenery';
   import { wearTheme } from '$lib/themes';
   import { credentials, prefs } from '$lib/storage';
   import type { JoinResponse, SessionLookup } from '$lib/types';
@@ -22,7 +22,8 @@
   let busy = $state(false);
   let error = $state('');
   $effect(() => wearTheme(lookup?.theme ?? 'classic'));
-  const night = hauntedNight(PHONE_NIGHT);
+  const fx = $derived(scenery(lookup?.theme ?? 'classic'));
+  const sky = $derived(fx?.phone());
 
   $effect(() => {
     const c = code;
@@ -71,9 +72,11 @@
 <svelte:head><title>Join {lookup?.title ?? 'the party'} · OpenMic</title></svelte:head>
 
 <div class="lounge-bg"></div>
-{#if lookup?.theme === 'halloween'}
-  <div class="haunt" aria-hidden="true">
-    <canvas class="dither" use:dither={{ scene: night, palette: HALLOWEEN_PALETTE, pixel: 1.5, fps: 15 }}></canvas>
+{#if fx && sky}
+  <div class="scenery" aria-hidden="true">
+    {#key sky}
+      <canvas class="dither" use:dither={{ scene: sky, palette: fx.palette, pixel: 1.5, fps: 15 }}></canvas>
+    {/key}
   </div>
 {/if}
 <main class="page">
@@ -121,7 +124,7 @@
 </main>
 
 <style>
-  .haunt {
+  .scenery {
     position: fixed;
     inset: 0 0 auto;
     height: 360px;
